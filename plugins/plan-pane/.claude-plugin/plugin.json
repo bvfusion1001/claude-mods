@@ -1,0 +1,13 @@
+{
+  "name": "plan-pane",
+  "version": "0.5.8",
+  "description": "Side pane with Build Plan and DoD tabs for the current build plan and DoD ledger. /plan-pane, or the band's Bradar button, toggles it.",
+  "author": {
+    "name": "Brad"
+  },
+  "dependencies": [
+    "build-plan",
+    "dod"
+  ],
+  "types": "./types/index.d.ts"
+}

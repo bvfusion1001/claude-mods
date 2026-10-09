@@ -1,0 +1,177 @@
+# .claude/dod-policy.yml — Definition-of-Done policy for the dod: skill family.
+#
+# Defines the item set, requiredness, triggers, verifiers, and canonical doc
+# paths for THIS repo. dod:init tailors a per-ticket checklist from it;
+# dod:check judges each item with the named verifier.
+#
+# This is the SF-tuned template. Tune it for the repo: add/remove items, adjust
+# requiredness and `when:` globs, and point `path:`/`evidence_doc:` at this
+# repo's canonical doc locations.
+
+# --- Layout (paths are resolved by dod:init) -------------------------------
+areas_root: docs                       # where doc areas live
+spec_path: "{area}/specs/{ticket}"     # per-ticket folder, relative to areas_root
+checklist_file: _local/dod-checklist.md   # under the ticket's gitignored _local/ (local-only while DoD is personal)
+commit_checklist: never                # never | ask | always. Ledger is gitignored; set to ask/always only once DoD ships and the ledger moves out of _local/
+
+# --- Requiredness ----------------------------------------------------------
+# always       included in every ledger; can only be N/A with an explicit reason
+# conditional  included iff any `when:` glob matches a path in the diff
+# optional      offered at init, off unless the user opts in
+#
+# verifier         which dod:check verifier judges this item (see dod:check skill)
+# human_asserted   true -> dod:check asks the user and records their evidence
+# path             canonical doc path template (for doc-fresh verifier)
+# evidence_doc     supporting doc dod:check reads as evidence
+
+items:
+  # --- Implementation ---
+  - id: acceptance-criteria
+    label: Acceptance criteria met
+    category: Implementation
+    requiredness: always
+    verifier: human-asserted
+    human_asserted: true
+
+  - id: conventions
+    label: Code follows .claude/rules conventions
+    category: Implementation
+    requiredness: always
+    verifier: conventions
+
+  # --- Tests ---
+  - id: apex-tests
+    label: Apex unit tests (new/updated, coverage >= threshold)
+    category: Tests
+    requiredness: conditional
+    when: ["**/classes/**/*.cls", "**/triggers/**/*.trigger"]
+    verifier: apex-tests
+
+  - id: lwc-tests
+    label: LWC Jest tests
+    category: Tests
+    requiredness: conditional
+    when: ["**/lwc/**"]
+    verifier: lwc-tests
+
+  - id: empirical
+    label: Manually tested in a scratch/dev org (with evidence)
+    category: Tests
+    requiredness: always
+    verifier: manual-test
+    human_asserted: true
+    evidence_doc: "{area}/manual-test-scenarios.md"
+
+  - id: edge-cases
+    label: Edge cases — negative paths, FLS/USER_MODE, bulk/governor limits
+    category: Tests
+    requiredness: conditional
+    when: ["**/classes/**/*.cls", "**/triggers/**/*.trigger"]
+    verifier: human-asserted
+    human_asserted: true
+
+  - id: test-data
+    label: Test data / anonymous-apex scripts captured in the shared scripts repo
+    category: Tests
+    requiredness: optional
+    verifier: human-asserted
+    human_asserted: true
+
+  # --- Verification gates ---
+  - id: code-analyzer
+    label: Code Analyzer / PMD clean
+    category: Verification
+    requiredness: always
+    verifier: code-analyzer
+
+  - id: deploy
+    label: Deploys green to scratch/dev org
+    category: Verification
+    requiredness: always
+    verifier: deploy
+
+  - id: ci
+    label: Affected CI tests pass
+    category: Verification
+    requiredness: conditional
+    when: ["force-app/**"]
+    verifier: ci
+
+  # --- Documentation ---
+  - id: persistent-docs
+    label: Persistent docs updated under the owning area
+    category: Documentation
+    requiredness: conditional
+    when: ["force-app/**"]
+    verifier: doc-fresh
+    path: "{area}"
+
+  - id: arch-delta
+    label: architecture.md updated if structure changed
+    category: Documentation
+    requiredness: optional
+    verifier: doc-fresh
+    path: "{area}/architecture.md"
+
+  - id: decisions-delta
+    label: decisions.md updated if a non-obvious decision was made
+    category: Documentation
+    requiredness: optional
+    verifier: doc-fresh
+    path: "{area}/decisions.md"
+
+  # Opt in when the area is unfamiliar or tangled: builds a numbered set of
+  # self-contained HTML explainer pages (one concept per page, taught from zero)
+  # under {area}/explainers/. Run the `deep-explain` skill; `deep-explain:review`
+  # re-verifies an existing set. Best done BEFORE implementing.
+  - id: explainers
+    label: Explainer pages built/refreshed for the area
+    category: Documentation
+    requiredness: optional
+    verifier: doc-fresh
+    path: "{area}/explainers"
+
+  - id: release-notes
+    label: User-facing / release-note impact captured
+    category: Documentation
+    requiredness: optional
+    verifier: human-asserted
+    human_asserted: true
+
+  - id: labels
+    label: Custom Labels / help text added or updated
+    category: Documentation
+    requiredness: conditional
+    when: ["**/labels/**"]
+    verifier: human-asserted
+    human_asserted: true
+
+  # --- Traceability ---
+  - id: memory
+    label: MEMORY.md / claude-mem updated if a non-obvious project fact changed
+    category: Traceability
+    requiredness: optional
+    verifier: human-asserted
+    human_asserted: true
+
+  - id: pr
+    label: PR exists and is linked; branch + commit conventions satisfied
+    category: Traceability
+    requiredness: always
+    verifier: traceability
+
+  # --- Migration / config ---
+  - id: permset
+    label: Permission-set / FLS updates
+    category: Migration
+    requiredness: conditional
+    when: ["**/permissionsets/**", "**/objects/**/fields/**"]
+    verifier: human-asserted
+    human_asserted: true
+
+  - id: data-migration
+    label: Data backfill / migration scripts
+    category: Migration
+    requiredness: optional
+    verifier: human-asserted
+    human_asserted: true

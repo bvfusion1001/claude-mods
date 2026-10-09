@@ -1,0 +1,34 @@
+{
+  "name": "claude-mods",
+  "description": "Context band, one-press handoff, and a build plan and DoD side pane for Claude Code.",
+  "owner": {
+    "name": "Brad"
+  },
+  "plugins": [
+    {
+      "name": "context-band",
+      "source": "./plugins/context-band",
+      "description": "Context zone band above the prompt, with a one-press Handoff and a rolling handoff draft."
+    },
+    {
+      "name": "plan-pane",
+      "source": "./plugins/plan-pane",
+      "description": "Side pane with Build Plan and DoD tabs for the current build plan and DoD ledger. Open with /plan-pane."
+    },
+    {
+      "name": "stash",
+      "source": "./plugins/stash",
+      "description": "Stash a session's context and git state, then resume it exactly, from any tool. /stash, /stash:resume, /stash:list, /stash:merge."
+    },
+    {
+      "name": "build-plan",
+      "source": "./plugins/build-plan",
+      "description": "Phased, test-first build plans you work top to bottom from chat. /build-plan:init, :start, :add, :next, :reorder."
+    },
+    {
+      "name": "dod",
+      "source": "./plugins/dod",
+      "description": "Per-ticket Definition-of-Done ledgers, verified with real evidence, plus a PR gate that asks before opening a PR on a non-green ledger."
+    }
+  ]
+}

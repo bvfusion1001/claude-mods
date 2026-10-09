@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mod Gallery</title>
+<style>
+:root {
+  --bg: #f6f5f2; --panel: #ffffff; --ink: #1d1d1b; --dim: #6b6b66; --line: #e2e0da;
+  --chip: #efede8; --green: #16a34a; --yellow: #ca8a04; --red: #dc2626; --cyan: #0891b2;
+  --accent: #4f46e5; --code: #f1efea;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141413; --panel: #1e1e1c; --ink: #ecebe6; --dim: #9a9890; --line: #33322e;
+    --chip: #2a2926; --green: #22c55e; --yellow: #eab308; --red: #f87171; --cyan: #22d3ee;
+    --accent: #818cf8; --code: #262522;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141413; --panel: #1e1e1c; --ink: #ecebe6; --dim: #9a9890; --line: #33322e;
+  --chip: #2a2926; --green: #22c55e; --yellow: #eab308; --red: #f87171; --cyan: #22d3ee;
+  --accent: #818cf8; --code: #262522;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 -apple-system, "Segoe UI", system-ui, sans-serif; }
+main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 19px; margin: 40px 0 6px; }
+.lede { color: var(--dim); margin: 0 0 8px; max-width: 70ch; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; min-width: 0; }
+.card h3 { font-size: 14px; margin: 0 0 2px; }
+.card .what { color: var(--dim); font-size: 13px; margin: 0 0 12px; }
+.idea { margin-top: 12px; font-size: 13px; border-top: 1px dashed var(--line); padding-top: 8px; }
+.idea b { color: var(--accent); font-weight: 600; }
+.mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; }
+.dimt { color: var(--dim); }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--chip); color: var(--ink); border-radius: 6px; padding: 3px 9px; font-size: 13px; cursor: pointer; }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn kbd { font: 11px ui-monospace, monospace; border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; opacity: .8; }
+.row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.spread { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.prompt { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; color: var(--dim); background: var(--panel); }
+.band { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; background: var(--chip); margin-bottom: 6px; }
+.toast { border-left: 3px solid var(--green); background: var(--chip); border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+.status { font: 12px ui-monospace, monospace; color: var(--dim); border-top: 1px solid var(--line); padding-top: 6px; }
+pre { background: var(--code); border-radius: 8px; padding: 10px; overflow-x: auto; margin: 0; font: 12.5px/1.45 ui-monospace, Menlo, monospace; }
+.add { color: var(--green); } .del { color: var(--red); } .kw { color: var(--accent); } .str { color: var(--yellow); }
+input[type=text], select { width: 100%; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; font-size: 13px; }
+a { color: var(--accent); }
+svg text { fill: var(--dim); font: 10px -apple-system, system-ui, sans-serif; }
+.legend { display: flex; gap: 12px; font-size: 12px; color: var(--dim); margin-top: 4px; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.places { display: grid; grid-template-columns: 1fr 230px; gap: 10px; margin-top: 14px; }
+@media (max-width: 640px) { .places { grid-template-columns: 1fr; } }
+.chat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 300px; }
+.msg { background: var(--chip); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+.tag { font: 11px ui-monospace, monospace; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
+.pane { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; font-size: 13px; }
+.cell { width: 26px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; background: var(--chip); }
+.note { font-size: 13px; color: var(--dim); margin-top: 28px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>What a mod can draw</h1>
+  <p class="lede">Mockups of every building block a Claude Code mod can use, drawn here in HTML so you can see them side by side. Mods don't get HTML or CSS. They build a tree of these elements, and the terminal and desktop app each draw it in their own native style. Each card ends with an idea for your tools.</p>
+
+  <h2>Where a mod can draw</h2>
+  <p class="lede">Five places. Your mods already use the band and the pane.</p>
+  <div class="places">
+    <div class="chat">
+      <div class="msg"><span class="tag">transcript row</span><br>A command's output, redrawn as a card: <b>Stashed as release-rollout</b> · 12 files · <a href="#">open</a></div>
+      <div class="toast"><span class="tag">toast</span><br>✓ CI passed on #81. Ready for review.</div>
+      <div style="flex:1"></div>
+      <div class="band"><span class="tag">band</span>
+        <div class="spread"><span style="color:var(--yellow)">🟡 560k tokens, plan a handoff</span><span class="row"><span class="btn">Bradar <kbd>B</kbd></span><span class="btn primary">Handoff <kbd>H</kbd></span></span></div>
+      </div>
+      <div class="prompt">Ask anything…</div>
+      <div class="status"><span class="tag">status line</span> main · PROJ-394 · DoD 7/9 · $4.10 today</div>
+    </div>
+    <div class="pane"><span class="tag">pane</span><br><b>Build Plan &amp; DoD</b><br><span class="dimt">A side panel. Scrolls itself when content runs long. Any of the elements below fit in here.</span></div>
+  </div>
+
+  <h2>The building blocks</h2>
+  <div class="grid">
+
+    <div class="card">
+      <h3>Box + Text</h3>
+      <p class="what">Layout and styled text: rows, columns, gaps, padding, borders, color, bold, dim, strikethrough.</p>
+      <div style="border:1px solid var(--line);border-radius:8px;padding:8px">
+        <div style="color:var(--cyan);font-weight:600">▾ Phase 3: Docs the demo needs · 6/9</div>
+        <div style="padding-left:16px" class="dimt">✓ <s>Release Runbook section</s></div>
+        <div style="padding-left:16px">○ Test cases view on Work Items</div>
+      </div>
+      <p class="idea"><b>Idea:</b> a one-line PR review queue in the band: <span class="mono">3 waiting on you · oldest 2d</span>.</p>
+    </div>
+
+    <div class="card">
+      <h3>Button</h3>
+      <p class="what">Primary or plain, a one-letter hotkey, and any action: run a skill, write a file, call an API.</p>
+      <div class="row"><span class="btn primary">Check off &amp; next</span><span class="btn">Resume plan</span><span class="btn">Run dod:check <kbd>D</kbd></span></div>
+      <p class="idea"><b>Idea:</b> "Open PR" on the band once the DoD ledger turns green, running <span class="mono">pr-pre-review</span> first.</p>
+    </div>
+
+    <div class="card">
+      <h3>Markdown</h3>
+      <p class="what">Headings, lists, bold, code, and links you can press. Already in your pane for linked items.</p>
+      <div>○ Ship <a href="#">PROJ-395</a> after <a href="#">#88</a> merges. See <a href="#">Release Runbook</a>.</div>
+      <p class="idea"><b>Idea:</b> a "Today" pane: the work brief as clickable tickets, PRs and Notion pages.</p>
+    </div>
+
+    <div class="card">
+      <h3>Code</h3>
+      <p class="what">Syntax highlighting, and unified diffs with added and removed lines colored.</p>
+<pre><span class="dimt">@@ release.ts @@</span>
+<span class="del">- const cut = '2026-10-05'</span>
+<span class="add">+ const cut = <span class="str">'2026-10-12'</span></span>
+  <span class="kw">export</span> { cut }</pre>
+      <p class="idea"><b>Idea:</b> show the uncommitted diff of the current plan item, so you review as you go.</p>
+    </div>
+
+    <div class="card">
+      <h3>Svg: charts</h3>
+      <p class="what">Any vector drawing. With interactive on, hover, CSS hover, animation and tooltips work.</p>
+      <svg viewBox="0 0 280 90" width="100%" role="img" aria-label="Tokens per turn, rising from 40k to 560k">
+        <polyline fill="none" stroke="var(--cyan)" stroke-width="2" points="0,82 25,78 50,74 75,70 100,61 125,55 150,47 175,40 200,30 225,24 250,15 275,10"/>
+        <line x1="0" x2="280" y1="38" y2="38" stroke="var(--yellow)" stroke-dasharray="3 3"/>
+        <line x1="0" x2="280" y1="18" y2="18" stroke="var(--red)" stroke-dasharray="3 3"/>
+        <text x="4" y="34">yellow 550k</text><text x="4" y="14">red 700k</text>
+      </svg>
+      <p class="idea"><b>Idea:</b> a token sparkline in the band, so you see how fast a chat is filling, not just where it is.</p>
+    </div>
+
+    <div class="card">
+      <h3>Svg: rings and bars</h3>
+      <p class="what">Progress rings, stacked bars, small multiples. Your pane's progress bar is one.</p>
+      <div class="row" style="gap:18px">
+        <svg width="70" height="70" viewBox="0 0 36 36" role="img" aria-label="DoD 7 of 9 verified">
+          <circle cx="18" cy="18" r="15" fill="none" stroke="var(--chip)" stroke-width="4"/>
+          <circle cx="18" cy="18" r="15" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="73.3 94.2" stroke-linecap="round" transform="rotate(-90 18 18)"/>
+          <text x="18" y="21" text-anchor="middle" style="fill:var(--ink);font-size:9px;font-weight:600">7/9</text>
+        </svg>
+        <div style="flex:1;min-width:140px">
+          <svg width="100%" height="10" role="img" aria-label="DoD: 7 verified, 1 weak, 1 missing"><rect width="100%" height="10" rx="5" fill="var(--chip)"/><rect width="78%" height="10" rx="5" fill="var(--green)"/></svg>
+          <div class="legend"><span><i class="sw" style="background:var(--green)"></i>7 verified</span><span><i class="sw" style="background:var(--yellow)"></i>1 weak</span><span><i class="sw" style="background:var(--red)"></i>1 missing</span></div>
+        </div>
+      </div>
+      <p class="idea"><b>Idea:</b> a DoD ring in the status line, so a red ledger is visible before you open a PR.</p>
+    </div>
+
+    <div class="card">
+      <h3>Svg: diagrams</h3>
+      <p class="what">Boxes and arrows drawn from live data, such as a stack of branches or a flow.</p>
+      <svg viewBox="0 0 280 70" width="100%" role="img" aria-label="Stacked PRs: schema, then service, then UI, into main">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--dim)"/></marker></defs>
+        <g style="font-size:10px">
+          <rect x="2" y="22" width="56" height="26" rx="6" fill="var(--chip)" stroke="var(--line)"/><text x="30" y="39" text-anchor="middle" style="fill:var(--ink)">main</text>
+          <rect x="76" y="22" width="56" height="26" rx="6" fill="var(--chip)" stroke="var(--green)"/><text x="104" y="39" text-anchor="middle" style="fill:var(--ink)">schema ✓</text>
+          <rect x="150" y="22" width="56" height="26" rx="6" fill="var(--chip)" stroke="var(--yellow)"/><text x="178" y="39" text-anchor="middle" style="fill:var(--ink)">service</text>
+          <rect x="222" y="22" width="56" height="26" rx="6" fill="var(--chip)" stroke="var(--line)"/><text x="250" y="39" text-anchor="middle" style="fill:var(--ink)">UI</text>
+          <line x1="76" y1="35" x2="60" y2="35" stroke="var(--dim)" marker-end="url(#ar)"/>
+          <line x1="150" y1="35" x2="134" y2="35" stroke="var(--dim)" marker-end="url(#ar)"/>
+          <line x1="222" y1="35" x2="208" y2="35" stroke="var(--dim)" marker-end="url(#ar)"/>
+        </g>
+      </svg>
+      <p class="idea"><b>Idea:</b> a <span class="mono">gh stack</span> pane: each layer's review and CI state at a glance.</p>
+    </div>
+
+    <div class="card">
+      <h3>Input + Select</h3>
+      <p class="what">A text box and a dropdown inside a pane or band. Not on mobile.</p>
+      <div style="display:grid;gap:8px">
+        <input type="text" placeholder="Add to Parking Lot…" aria-label="Add to Parking Lot">
+        <select aria-label="Working on"><option>PROJ-394 (branch)</option><option>idea-x (freeform)</option><option>BUILD-PLAN.md</option></select>
+      </div>
+      <p class="idea"><b>Idea:</b> type a Parking Lot idea in the pane without breaking your chat's flow.</p>
+    </div>
+
+    <div class="card">
+      <h3>Link + Image</h3>
+      <p class="what">A link that opens in the browser, and pictures: screenshots, avatars, thumbnails.</p>
+      <div class="row">
+        <svg width="34" height="34" role="img" aria-label="Avatar placeholder"><circle cx="17" cy="17" r="17" fill="var(--chip)"/><text x="17" y="21" text-anchor="middle" style="fill:var(--ink);font-size:12px">AB</text></svg>
+        <span>Review requested on <a href="#">my-app#88</a></span>
+      </div>
+      <p class="idea"><b>Idea:</b> the last screenshot you pasted, pinned in the pane while you work on its fix.</p>
+    </div>
+
+    <div class="card">
+      <h3>Client widget</h3>
+      <p class="what">A small stateful widget with its own timers, keys and mouse: live clocks, drag, even games.</p>
+      <div class="spread">
+        <span>Focus block <b class="mono" id="clock">24:59</b></span>
+        <span class="row"><span class="cell" style="color:var(--green)">✓</span><span class="cell" style="color:var(--green)">✓</span><span class="cell">3</span><span class="cell dimt">4</span></span>
+      </div>
+      <p class="idea"><b>Idea:</b> a live timer for billable client work that stops when the chat goes idle.</p>
+    </div>
+
+  </div>
+
+  <h2>What a mod can do behind the drawing</h2>
+  <div class="grid">
+    <div class="card"><h3>Read and act</h3><p class="what" style="margin:0">Read and write files, list folders, run processes, make HTTP calls, run slash commands and skills.</p></div>
+    <div class="card"><h3>Think on the side</h3><p class="what" style="margin:0">Call a cheap model without touching the chat, like your rolling handoff draft on Haiku.</p></div>
+    <div class="card"><h3>Remember</h3><p class="what" style="margin:0">Keep values per chat or across chats. A change redraws whatever reads it.</p></div>
+    <div class="card"><h3>React</h3><p class="what" style="margin:0">Turn ends, tool calls, prompts, <span class="mono">/clear</span>, chat start. Your plan tie runs on file edits.</p></div>
+  </div>
+
+  <p class="note">Limits: no HTML or CSS, layout is flexbox in character cells, borders wrap a whole box, no file watching, and a hotkey works only once its band or pane has focus. Details in <a href="UI-TOOLKIT.md">UI-TOOLKIT.md</a>.</p>
+</main>
+<script>
+(function () {
+  var s = 24 * 60 + 59, el = document.getElementById('clock');
+  setInterval(function () { s = s > 0 ? s - 1 : 1499; el.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }, 1000);
+})();
+</script>
+</body>
+</html>

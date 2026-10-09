@@ -1,0 +1,29 @@
+#!/bin/zsh
+# Test every plugin, then record its version, so installs keep reading this folder.
+set -e -o pipefail
+cd "${0:A:h}/.."
+for dir in plugins/*(/); do
+  [[ -d "$dir/tests" ]] || continue
+  echo "== testing ${dir:t}"
+  (cd "$dir" && CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1 claude plugin test . | tail -2)
+done
+# type-check plugin code; tests use loose stubs on purpose
+if [[ -d .types ]] && command -v tsc > /dev/null; then
+  for dir in plugins/*(/); do
+    [[ -f "$dir/tsconfig.json" ]] || continue
+    echo "== type-checking ${dir:t}"
+    tsc -p "$dir"
+  done
+else
+  echo "skipping type-check: needs tsc and .types/"
+fi
+claude plugin validate . | tail -1
+# a version bump the install hasn't recorded makes sessions fall back to an old cached copy
+claude plugin marketplace update claude-mods > /dev/null
+installed=$(claude plugin list 2>/dev/null)
+for dir in plugins/*(/); do
+  # only installed plugins; match the list row, not error text naming one
+  [[ "$installed" == *"❯ ${dir:t}@claude-mods"* ]] || continue
+  claude plugin update "${dir:t}@claude-mods" | tail -1
+done
+echo "Done. New sessions load it on start."

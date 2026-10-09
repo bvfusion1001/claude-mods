@@ -1,0 +1,8 @@
+{
+  "name": "dod",
+  "version": "0.1.1",
+  "description": "Per-ticket Definition-of-Done ledgers, verified with real evidence, plus a PR gate that asks before opening a PR on a non-green ledger.",
+  "author": {
+    "name": "Brad"
+  }
+}

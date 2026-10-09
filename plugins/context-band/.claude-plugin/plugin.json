@@ -1,0 +1,69 @@
+{
+  "name": "context-band",
+  "version": "0.10.1",
+  "description": "Band above the prompt: context zone, a Bradar pane toggle, and a one-press Handoff with a rolling draft.",
+  "author": {
+    "name": "Brad"
+  },
+  "dependencies": [
+    "stash",
+    "plan-pane"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "handoffFrom": {
+      "type": "number",
+      "title": "Handoff from (tokens)",
+      "description": "Show the zone label and Handoff button from this many tokens. Below it, the band shows only the count.",
+      "default": 400000
+    },
+    "paneCommand": {
+      "type": "string",
+      "title": "Pane command",
+      "description": "Command the Bradar button runs, without the slash.",
+      "default": "plan-pane"
+    },
+    "yellowAt": {
+      "type": "number",
+      "title": "Yellow at (tokens)",
+      "description": "Plan a handoff from this many tokens.",
+      "default": 550000
+    },
+    "redAt": {
+      "type": "number",
+      "title": "Red at (tokens)",
+      "description": "Hand off now from this many tokens.",
+      "default": 700000
+    },
+    "stashCommand": {
+      "type": "string",
+      "title": "Stash command",
+      "description": "Skill the Handoff button runs, without the slash.",
+      "default": "stash"
+    },
+    "resumeCommand": {
+      "type": "string",
+      "title": "Resume command",
+      "description": "Skill that resumes the stash after /clear, without the slash.",
+      "default": "stash:resume"
+    },
+    "limitsFrom": {
+      "type": "number",
+      "title": "Usage limits from (%)",
+      "description": "Show a 5-hour or weekly usage limit once it passes this percent.",
+      "default": 70
+    },
+    "draftEvery": {
+      "type": "number",
+      "title": "Draft every (turns)",
+      "description": "Update the rolling handoff draft after this many turns, and on each zone change.",
+      "default": 10
+    },
+    "draftModel": {
+      "type": "string",
+      "title": "Draft model",
+      "description": "Model that writes the rolling draft.",
+      "default": "haiku"
+    }
+  }
+}
