@@ -232,6 +232,8 @@ restores it.
       indented, later phases plain. Items with a link are no longer cut at 90 characters (the cut
       broke links). `plan-pane` 0.5.4, 35 tests pass.
 - [ ] Seen live: the three levels read clearly in the desktop pane.
+- [x] Active item, 2026-10-09: the first open item in the current phase gets a bold yellow `▶`
+      (Build Plan tab only; a DoD ledger isn't worked in order). `plan-pane` 0.5.8.
 
 **Done when:** two chats in one repo, one on a ticket and one freeform, each show their own plan,
 and each survives a Handoff.
@@ -281,7 +283,8 @@ and each survives a Handoff.
    as dependencies. Org-wide: claude.ai Organization settings > Plugins & skills can sync the repo,
    or managed settings `extraKnownMarketplaces` + `enabledPlugins`. Updates: bump `version`;
    third-party marketplaces need auto-update turned on (`autoUpdate: true`, or `/plugin` >
-   Marketplaces). Still needs Brad: create the repo and add the remote.
+   Marketplaces). Repo created 2026-10-09: private `bvfusion1001/claude-mods`. Teammates need
+   collaborator access, or move it to an org later.
 3. ~~Family name.~~ Decided: `build-plan:` (Brad also floated `brad-plan`, but the team uses it).
 4. ~~The loop.~~ Confirmed: Discover, Design, Test, Build, Verify.
 
