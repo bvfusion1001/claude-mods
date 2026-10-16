@@ -160,6 +160,7 @@ runs the small loop; each phase runs the large one.
 - [x] One pane, two tabs: **Plan** (current phase, items, checkmarks) and **DoD** (ledger items with
       verified / weak / missing).
 - [x] Reads the files; never writes them. Chat and the skills stay the way to change them.
+      Changed 2026-10-16: the Parking Lot box is the one exception.
 - [x] Redraws when either file changes: mods have no file watch, so it checks mtimes every 3 seconds while open, and after each turn.
 - [x] Opens by command (`/plan-pane`), and stays shut otherwise.
 - [x] Seen live 2026-10-07: `/plan-pane` opens in the desktop app (caterpillar, `dev`).
@@ -232,6 +233,10 @@ restores it.
       indented, later phases plain. Items with a link are no longer cut at 90 characters (the cut
       broke links). `plan-pane` 0.5.4, 35 tests pass.
 - [ ] Seen live: the three levels read clearly in the desktop pane.
+- [x] Experiment, 2026-10-16: a Parking Lot text box (Enter appends under `## Parking Lot`) and
+      "Open full view", a narrow, tall HTML page of the whole plan beside it, rewritten on each
+      plan change and reloading itself every 4 seconds. `plan-pane` 0.6.0, 46 tests pass.
+- [ ] Brad decides whether the full view earns its place next to the pane.
 - [x] Active item, 2026-10-09: the first open item in the current phase gets a bold yellow `▶`
       (Build Plan tab only; a DoD ledger isn't worked in order). `plan-pane` 0.5.8.
 

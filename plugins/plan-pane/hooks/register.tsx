@@ -3,6 +3,7 @@ import type { EngineInterface, Register } from 'claude-code'
 
 import type { Doc, Section, Tab, Working } from '../types'
 import { bindingPath, dodFor, parseBinding, planName, workRoot } from './binding'
+import { addToParkingLot, fullViewHtml, fullViewPath, parseFull } from './fullview'
 import { branchFromHead, currentIndex, parseChecklist, progress, progressBarSvg, progressBarText, ticketFromBranch } from './parse'
 
 const PANE = 'plan-pane'
@@ -40,6 +41,8 @@ const foundAtom = atom({ plugin: 'plan-pane', key: 'found' } as const, [] as str
 let isOpen = false
 let isPolling = false
 let seen = ''
+// the plan on screen, for the Parking Lot box and the full view
+let shown: { plan: string; root: string } | undefined
 
 async function rootOf($: EngineInterface): Promise<string> {
   const cwd = await $.session.cwd()
@@ -164,6 +167,37 @@ async function refresh($: EngineInterface) {
   await update($, ticketAtom, () => found.ticket ?? null)
   await update($, workingAtom, () => found.working)
   await update($, foundAtom, () => others)
+  shown = found.plan ? { plan: found.plan, root: found.root } : undefined
+  // keep an open full view current
+  if (shown && (await $.fs.exists(fullViewPath(shown.plan, shown.root)))) await writeFullView($)
+}
+
+async function writeFullView($: EngineInterface): Promise<string | undefined> {
+  if (!shown) return undefined
+  const path = fullViewPath(shown.plan, shown.root)
+  const rel = shown.plan.startsWith(`${shown.root}/`) ? shown.plan.slice(shown.root.length + 1) : shown.plan
+  const updated = new Date(await $.clock.now()).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+  const html = fullViewHtml(parseFull(await $.fs.read(shown.plan)), { name: planName(shown.plan), path: rel, updated })
+  await $.fs.write(path, html)
+  return path
+}
+
+async function openFullView($: EngineInterface) {
+  const path = await writeFullView($)
+  if (!path) return
+  try {
+    await $.process.run(['open', path])
+  } catch {
+    await $.ui.toast(`Full view saved to ${path}`)
+  }
+}
+
+async function park($: EngineInterface, text: string) {
+  const idea = text.trim()
+  if (!shown || !idea) return
+  await $.fs.write(shown.plan, addToParkingLot(await $.fs.read(shown.plan), idea))
+  seen = ''
+  await refresh($)
 }
 
 async function poll($: EngineInterface) {
@@ -245,6 +279,7 @@ export const register: Register = (on) => {
     const { Box, Button, Text, Markdown } = ui
     // only some surfaces draw Svg
     const Svg = 'Svg' in ui ? ui.Svg : undefined
+    const Input = 'Input' in ui ? ui.Input : undefined
     const current = await read($, tab)
     const doc = current === 'plan' ? await read($, plan) : await read($, dod)
     const ticket = await read($, ticketAtom)
@@ -267,7 +302,13 @@ export const register: Register = (on) => {
             {start}
           </Box>
         : <Box flexDirection="column" gap={1}><Markdown text={PLAN_HOW} />{start}</Box>
-      actions = <Box>{action('plan-next', 'Check off & next', 'build-plan:next')}<Text> </Text>{action('plan-resume', 'Resume plan', 'build-plan:start')}</Box>
+      actions = (
+        <Box>
+          {action('plan-next', 'Check off & next', 'build-plan:next')}<Text> </Text>
+          {action('plan-resume', 'Resume plan', 'build-plan:start')}<Text> </Text>
+          <Button key="full-view" label="Open full view" plain onPress={() => openFullView($)} />
+        </Box>
+      )
     } else {
       empty = working.isFreeform
         ? <Markdown text={`**${working.name} is a freeform plan, so no DoD ledger.** A ledger belongs to one ticket. Pick a ticket plan above to see its ledger.`} />
@@ -291,6 +332,9 @@ export const register: Register = (on) => {
         {doc ? <Text dimColor>{doc.path}</Text> : empty}
         {doc ? actions : null}
         {doc ? sectionsView(doc.sections, Box, Text, Markdown, current === 'plan') : null}
+        {doc && current === 'plan' && Input
+          ? <Input key="parking" placeholder="Add to Parking Lot…" submitLabel="add" onSubmit={(v: string) => { park($, v) }} />
+          : null}
       </Box>
     )
   })

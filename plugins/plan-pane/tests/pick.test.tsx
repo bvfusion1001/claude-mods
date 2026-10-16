@@ -149,3 +149,28 @@ test('phases read as levels: done ones checked and dim, the current one marked o
   expect(await ui.find({ type: 'Text', text: /^ {2}Phase 3: Later · 0\/1$/ })).toBeDefined()
   await ui.unmount()
 })
+
+test('typing an idea into the Parking Lot box adds it to the plan file', async ($, on) => {
+  const files = repo({ [BINDING]: JSON.stringify({ plan: FREE, root: '/r' }) })
+  base(on, files)
+  const ui = await openPane($)
+  await ui.input({ key: 'parking', text: 'Slack digest', kind: 'submit' })
+  expect(files[FREE]).toContain('## Parking Lot\n\n- Slack digest\n')
+  await ui.unmount()
+})
+
+test('Open full view writes the page beside the plan and opens it', async ($, on) => {
+  const writes: string[] = []
+  const ran: string[][] = []
+  const files = repo({ [BINDING]: JSON.stringify({ plan: FREE, root: '/r' }) })
+  base(on, files, writes)
+  on('process.run', (_$: any, e: any) => { ran.push([...e.argv]); return { value: { exitCode: 0, stdout: '', stderr: '' } } })
+  on('clock.now', () => ({ value: Date.UTC(2026, 9, 16, 20, 30) }))
+  const ui = await openPane($)
+  await ui.press({ key: 'full-view' })
+  const page = '/r/docs/_local/plans/idea-x/full-view.html'
+  expect(writes).toContain(page)
+  expect(files[page]).toContain('freeform item')
+  expect(ran).toEqual([['open', page]])
+  await ui.unmount()
+})

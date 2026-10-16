@@ -8,7 +8,8 @@ A side pane with two tabs: the build plan this chat is working on, and the ticke
 - **DoD tab.** Shows each ledger item as verified, weak, or missing.
 - **Working on.** Picks which plan this chat is tied to, from every plan in the repo.
 - **Buttons.** Start a plan or ledger when there is none. With one, check off and move on, resume, or check the DoD.
-- **Read only.** The pane never writes the files. Change them from chat or with the skills.
+- **Parking Lot box.** Type an idea and press Enter. It lands under `## Parking Lot` in the plan file. That's the only write the pane makes. Everything else changes from chat or the skills.
+- **Open full view.** Writes a tall, narrow page of the whole plan (`full-view.html`, beside the plan, or in `docs/_local/` for a committed plan) and opens it in your browser. The pane rewrites it when the plan changes, and the page reloads itself every few seconds.
 - **Live.** Redraws within a few seconds when either file changes.
 
 ## Which plan it shows
