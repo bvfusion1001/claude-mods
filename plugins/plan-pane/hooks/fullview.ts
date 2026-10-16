@@ -82,7 +82,7 @@ function esc(s: string): string {
 
 // allow list: web, mail, or a relative path (no scheme before the first / ? #)
 function safeHref(href: string): boolean {
-  if (/[\x00-\x20]/.test(href)) return false
+  if (/[\x00-\x20\x7f]/.test(href)) return false
   return /^(https?:|mailto:)/i.test(href) || !(href.split(/[/?#]/)[0] ?? '').includes(':')
 }
 
