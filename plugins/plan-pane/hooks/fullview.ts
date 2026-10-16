@@ -77,7 +77,13 @@ export function fullViewPath(plan: string, root: string): string {
 }
 
 function esc(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+}
+
+// allow list: web, mail, or a relative path (no scheme before the first / ? #)
+function safeHref(href: string): boolean {
+  if (/[\x00-\x20]/.test(href)) return false
+  return /^(https?:|mailto:)/i.test(href) || !(href.split(/[/?#]/)[0] ?? '').includes(':')
 }
 
 function inline(s: string): string {
@@ -86,7 +92,7 @@ function inline(s: string): string {
     .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
     .replace(/(^|[\s(])\*([^*\s][^*]*)\*/g, '$1<i>$2</i>')
     .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (all, label: string, href: string) =>
-      /^\s*javascript:/i.test(href) ? all : `<a href="${href}" target="_blank" rel="noopener">${label}</a>`)
+      safeHref(href) ? `<a href="${href}" target="_blank" rel="noopener">${label}</a>` : all)
 }
 
 export function fullViewHtml(plan: FullPlan, meta: ViewMeta): string {

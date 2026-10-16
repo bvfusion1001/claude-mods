@@ -71,3 +71,11 @@ test('a Parking Lot idea that wraps keeps its second line, and italics render', 
   expect(p.parking).toEqual(['One idea that wraps.'])
   expect(fullViewHtml(parseFull('## P\n\n- [ ] check *verified* only\n'), { name: 'n', path: 'p', updated: 'u' })).toContain('<i>verified</i>')
 })
+
+test('links: web, mail and relative paths only', () => {
+  const html = (md: string) => fullViewHtml(parseFull(`## P\n\n- [ ] ${md}\n`), { name: 'n', path: 'p', updated: 'u' })
+  expect(html('[a](https://x.com/y)')).toContain('href="https://x.com/y"')
+  expect(html('[a](mailto:me@x.com)')).toContain('href="mailto:me@x.com"')
+  expect(html('[a](../src/app.ts)')).toContain('href="../src/app.ts"')
+  for (const bad of ['data:text/html,x', 'vbscript:x', 'JaVaScRiPt:x', 'file:///etc/passwd']) expect(html(`[a](${bad})`)).not.toContain('<a ')
+})
