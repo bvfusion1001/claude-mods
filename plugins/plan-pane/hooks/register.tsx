@@ -18,13 +18,9 @@ A build plan is the roadmap for work that takes more than one sitting. It's a lo
 4. **Park new ideas.** Anything that comes up mid-phase goes to the Parking Lot, not the current phase.
 5. **Come back.** After a \`/clear\` or a new chat, *Resume plan* picks up at the first open item.`
 
-const DOD_HOW = `A DoD ledger is the checklist that proves one ticket is really done: acceptance criteria, tests, docs, deploy and review. It's a local file beside the ticket's specs, gitignored.
+const DOD_SOON = `**Definition of Done is not implemented yet.**
 
-1. **Start.** Claude reads the ticket and the branch, then proposes the items that fit this ticket.
-2. **Work.** Build as usual. The ledger is the list you can't skip.
-3. **Check.** *Check DoD* looks for real evidence for every item and marks each one verified, weak or missing.
-4. **Close gaps.** *What next* picks the next gap to work on.
-5. **Done.** When everything is verified, the ticket is ready for PR review.`
+This tab will show the ticket's DoD ledger: the checklist that proves a ticket is really done, with each item marked verified, weak or missing. It's coming in a later version.`
 const POLL_MS = 3_000
 
 const plan = atom({ plugin: 'plan-pane', key: 'plan' } as const, null as Doc)
@@ -37,6 +33,8 @@ const workingAtom = atom({ plugin: 'plan-pane', key: 'working' } as const, NOTHI
 const pickerAtom = atom({ plugin: 'plan-pane', key: 'picker' } as const, null as string[] | null)
 // plans elsewhere in the repo, offered when this chat has none
 const foundAtom = atom({ plugin: 'plan-pane', key: 'found' } as const, [] as string[])
+// a chat with no reply yet is where Resume plan helps
+const freshAtom = atom({ plugin: 'plan-pane', key: 'isFresh' } as const, true)
 
 let isOpen = false
 let isPolling = false
@@ -148,14 +146,16 @@ async function togglePicker($: EngineInterface) {
 
 async function load($: EngineInterface, path: string | undefined, root: string): Promise<Doc> {
   if (!path) return null
-  return { path: path.startsWith(`${root}/`) ? path.slice(root.length + 1) : path, sections: parseChecklist(await $.fs.read(path)) }
+  const md = await $.fs.read(path)
+  return { path: path.startsWith(`${root}/`) ? path.slice(root.length + 1) : path, sections: parseChecklist(md), parking: parseFull(md).parking }
 }
 
 // redraws only when a file's mtime moved, so polling stays cheap
 async function refresh($: EngineInterface) {
   const found = await locate($)
   const others = found.plan ? [] : await listPlans($, found.root)
-  const stamps: string[] = [found.stamp, found.working.name, found.ticket ?? '', found.plan ?? '', found.dod ?? '', ...others]
+  const isFresh = await freshChat($)
+  const stamps: string[] = [String(isFresh), found.stamp, found.working.name, found.ticket ?? '', found.plan ?? '', found.dod ?? '', ...others]
   for (const p of [found.plan, found.dod]) if (p) stamps.push(String((await $.fs.stat(p)).mtimeMs))
   const key = stamps.join('|')
   if (key === seen) return
@@ -167,9 +167,18 @@ async function refresh($: EngineInterface) {
   await update($, ticketAtom, () => found.ticket ?? null)
   await update($, workingAtom, () => found.working)
   await update($, foundAtom, () => others)
+  await update($, freshAtom, () => isFresh)
   shown = found.plan ? { plan: found.plan, root: found.root } : undefined
   // keep an open full view current
   if (shown && (await $.fs.exists(fullViewPath(shown.plan, shown.root)))) await writeFullView($)
+}
+
+async function freshChat($: EngineInterface): Promise<boolean> {
+  try {
+    return !(await $.session.messages()).some((m) => m.role === 'assistant')
+  } catch {
+    return true
+  }
 }
 
 async function writeFullView($: EngineInterface): Promise<string | undefined> {
@@ -281,11 +290,12 @@ export const register: Register = (on) => {
     const Svg = 'Svg' in ui ? ui.Svg : undefined
     const Input = 'Input' in ui ? ui.Input : undefined
     const current = await read($, tab)
-    const doc = current === 'plan' ? await read($, plan) : await read($, dod)
+    const doc = current === 'plan' ? await read($, plan) : null
     const ticket = await read($, ticketAtom)
     const working = await read($, workingAtom)
     const picker = await read($, pickerAtom)
     const others = await read($, foundAtom)
+    const isFresh = await read($, freshAtom)
     const run = (command: string) => () => runSkill($, command)
     const action = (key: string, label: string, command: string) => (
       <Button key={key} label={label} onPress={run(command)} />
@@ -302,20 +312,16 @@ export const register: Register = (on) => {
             {start}
           </Box>
         : <Box flexDirection="column" gap={1}><Markdown text={PLAN_HOW} />{start}</Box>
+      // progress happens in chat; Resume only helps before the chat has started
       actions = (
         <Box>
-          {action('plan-next', 'Check off & next', 'build-plan:next')}<Text> </Text>
-          {action('plan-resume', 'Resume plan', 'build-plan:start')}<Text> </Text>
+          {isFresh ? <>{action('plan-resume', 'Resume plan', 'build-plan:start')}<Text> </Text></> : null}
           <Button key="full-view" label="Open full view" plain onPress={() => openFullView($)} />
         </Box>
       )
     } else {
-      empty = working.isFreeform
-        ? <Markdown text={`**${working.name} is a freeform plan, so no DoD ledger.** A ledger belongs to one ticket. Pick a ticket plan above to see its ledger.`} />
-        : ticket
-        ? <Box flexDirection="column" gap={1}><Markdown text={`**No DoD ledger for ${ticket} yet.**\n\n${DOD_HOW}`} />{action('dod-init', 'Start a DoD ledger', 'dod:init')}</Box>
-        : <Markdown text={`**No ticket on this branch, so no DoD ledger.** A ledger belongs to one ticket, found from the branch name, like \`d/PROJ-1234-short-name\`. Switch to a ticket branch to start one.\n\n${DOD_HOW}`} />
-      actions = <Box>{action('dod-check', 'Check DoD', 'dod:check')}<Text> </Text>{action('dod-next', 'What next', 'dod:next')}</Box>
+      empty = <Markdown text={DOD_SOON} />
+      actions = null
     }
 
     return (
@@ -332,6 +338,7 @@ export const register: Register = (on) => {
         {doc ? <Text dimColor>{doc.path}</Text> : empty}
         {doc ? actions : null}
         {doc ? sectionsView(doc.sections, Box, Text, Markdown, current === 'plan') : null}
+        {doc && doc.parking.length ? parkingView(doc.parking, Box, Text) : null}
         {doc && current === 'plan' && Input
           ? <Input key="parking" placeholder="Add to Parking Lot…" submitLabel="add" onSubmit={(v: string) => { park($, v) }} />
           : null}
@@ -393,6 +400,15 @@ function pickerView(plans: string[], onPick: (plan: string) => unknown, Box: any
         const name = planName(p)
         return <Button key={`pick-${name}`} label={name} plain onPress={() => onPick(p)} />
       })}
+    </Box>
+  )
+}
+
+function parkingView(ideas: string[], Box: any, Text: any) {
+  return (
+    <Box flexDirection="column" marginTop={1}>
+      <Text bold dimColor>{`Parking Lot · ${ideas.length}`}</Text>
+      {ideas.map((idea) => <Text dimColor>{`• ${idea.replace(/\*\*|`/g, '')}`}</Text>)}
     </Box>
   )
 }

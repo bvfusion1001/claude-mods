@@ -5,10 +5,10 @@ Claude Code plugins for long working sessions: a context band with one-press han
 | Plugin | What it does |
 |---|---|
 | [context-band](plugins/context-band/README.md) | Token zone above the prompt, usage limits, one-press Handoff, rolling handoff draft |
-| [plan-pane](plugins/plan-pane/README.md) | Side pane with the chat's build plan and the ticket's DoD ledger |
+| [plan-pane](plugins/plan-pane/README.md) | Side pane with the chat's build plan, a Parking Lot box, and a full-page view |
 | [stash](plugins/stash/README.md) | Save a session's context and git state, then resume it exactly |
 | [build-plan](plugins/build-plan/README.md) | Phased, test-first plans you work top to bottom from chat |
-| [dod](plugins/dod/README.md) | Per-ticket Definition-of-Done ledgers, plus a PR gate |
+| [dod](plugins/dod/README.md) | Preview, not installed by default: per-ticket Definition-of-Done ledgers, plus a PR gate |
 
 ## Install
 
@@ -22,7 +22,7 @@ claude plugin marketplace add bvfusion1001/claude-mods
 claude plugin install context-band@claude-mods
 ```
 
-That pulls in all five plugins. Start a new chat to load them.
+That pulls in the other three: `plan-pane`, `stash` and `build-plan`. Start a new chat to load them.
 
 ## Get updates
 

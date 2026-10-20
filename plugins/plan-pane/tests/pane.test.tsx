@@ -48,16 +48,6 @@ test('/plan-pane opens the pane on the Plan tab at the current phase', async ($,
   }
 })
 
-test('the DoD tab shows the ledger', async ($, on) => {
-  base(on)
-  await $.command.run({ command: 'plan-pane', args: '' })
-  const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
-  await ui.press({ key: 'tab-dod' })
-  expect(await ui.find({ type: 'Text', text: /○ AC2 tested/ })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: /✓ AC1 works/ })).toBeDefined()
-  await ui.unmount()
-})
-
 test('a failure still answers the command, with the reason', async ($, on) => {
   base(on, true)
   const r: any = await $.command.run({ command: 'plan-pane', args: '' })
@@ -82,29 +72,6 @@ test('no band row of its own: the context band hosts the toggle', async ($, on) 
   await band.unmount()
 })
 
-test('plan tab buttons run the build-plan skills', async ($, on) => {
-  const sent: string[] = []
-  base(on, false, sent)
-  await $.command.run({ command: 'plan-pane', args: '' })
-  const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
-  await ui.press({ key: 'plan-next' })
-  await ui.press({ key: 'plan-resume' })
-  expect(sent).toEqual(['open plan-pane', 'build-plan:next', 'build-plan:start'])
-  await ui.unmount()
-})
-
-test('dod tab buttons run the dod skills', async ($, on) => {
-  const sent: string[] = []
-  base(on, false, sent)
-  await $.command.run({ command: 'plan-pane', args: '' })
-  const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
-  await ui.press({ key: 'tab-dod' })
-  await ui.press({ key: 'dod-check' })
-  await ui.press({ key: 'dod-next' })
-  expect(sent).toEqual(['open plan-pane', 'dod:check', 'dod:next'])
-  await ui.unmount()
-})
-
 test('a progress bar sits under the tabs: drawn on desktop, text in the terminal', async ($, on) => {
   base(on)
   await $.command.run({ command: 'plan-pane', args: '' })
@@ -116,4 +83,33 @@ test('a progress bar sits under the tabs: drawn on desktop, text in the terminal
   expect(await term.find({ type: 'Svg' })).toBeUndefined()
   expect(await term.find({ type: 'Text', text: /█+░+ 1 of 3 done · 33%/ })).toBeDefined()
   await term.unmount()
+})
+
+test('the DoD tab says it is not built yet, with no buttons', async ($, on) => {
+  base(on)
+  await $.command.run({ command: 'plan-pane', args: '' })
+  const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
+  await ui.press({ key: 'tab-dod' })
+  expect(await ui.find({ type: 'Markdown', text: /not implemented yet/i })).toBeDefined()
+  expect(await ui.find({ key: 'dod-init' })).toBeUndefined()
+  expect(await ui.find({ key: 'dod-check' })).toBeUndefined()
+  await ui.unmount()
+})
+
+test('no Check off button; Resume plan shows only before the chat has started', async ($, on) => {
+  const sent: string[] = []
+  const msgs: any[] = []
+  base(on, false, sent)
+  on('session.messages', () => ({ value: msgs }))
+  on('turn.complete', () => ({ text: '' }))
+  await $.command.run({ command: 'plan-pane', args: '' })
+  const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
+  expect(await ui.find({ key: 'plan-next' })).toBeUndefined()
+  await ui.press({ key: 'plan-resume' })
+  expect(sent).toContain('build-plan:start')
+  msgs.push({ role: 'user', text: 'go', toolUses: [] }, { role: 'assistant', text: 'ok', toolUses: [] })
+  await $.turn.complete({ answer: '', durationMs: 0, isAborted: false, turnId: 't', reason: 'answer' })
+  expect(await ui.find({ key: 'plan-resume' })).toBeUndefined()
+  expect(await ui.find({ key: 'full-view' })).toBeDefined()
+  await ui.unmount()
 })

@@ -27,27 +27,3 @@ test('no plan: a button starts one', async ($, on) => {
   expect(sent).toEqual(['build-plan:init'])
   await ui.unmount()
 })
-
-test('no ledger on a ticket branch: a button starts one', async ($, on) => {
-  const sent: string[] = []
-  base(on, 'd/PROJ-42-x', sent)
-  await $.command.run({ command: 'plan-pane', args: '' })
-  const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
-  await ui.press({ key: 'tab-dod' })
-  expect(await ui.find({ type: 'Markdown', text: /No DoD ledger for PROJ-42/ })).toBeDefined()
-  expect(await ui.find({ type: 'Markdown', text: /verified, weak or missing/ })).toBeDefined()
-  await ui.press({ key: 'dod-init' })
-  expect(sent).toEqual(['dod:init'])
-  await ui.unmount()
-})
-
-test('no ticket in the branch: no DoD button, and says why', async ($, on) => {
-  base(on, 'main', [])
-  await $.command.run({ command: 'plan-pane', args: '' })
-  const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
-  await ui.press({ key: 'tab-dod' })
-  expect(await ui.find({ type: 'Markdown', text: /no ticket/i })).toBeDefined()
-  expect(await ui.find({ type: 'Markdown', text: /PROJ-1234/ })).toBeDefined()
-  expect(await ui.find({ key: 'dod-init' })).toBeUndefined()
-  await ui.unmount()
-})

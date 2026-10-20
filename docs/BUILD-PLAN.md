@@ -236,7 +236,10 @@ restores it.
 - [x] Experiment, 2026-10-16: a Parking Lot text box (Enter appends under `## Parking Lot`) and
       "Open full view", a narrow, tall HTML page of the whole plan beside it, rewritten on each
       plan change and reloading itself every 4 seconds. `plan-pane` 0.6.0, 46 tests pass.
-- [ ] Brad decides whether the full view earns its place next to the pane.
+- [x] Brad kept the full view and the Parking Lot box, 2026-10-20.
+- [x] Ready to share, 2026-10-20: DoD tab says "not implemented yet"; `dod` no longer a dependency.
+      "Check off & next" removed (progress is said in chat); "Resume plan" shows only before a
+      chat's first reply. Parking Lot ideas list at the bottom of the pane. `plan-pane` 0.7.0.
 - [x] Active item, 2026-10-09: the first open item in the current phase gets a bold yellow `▶`
       (Build Plan tab only; a DoD ledger isn't worked in order). `plan-pane` 0.5.8.
 
@@ -313,3 +316,4 @@ and each survives a Handoff.
   alias. Could be team-shareable.
 - **context-relay repo.** Older design for the same idea, with uncommitted specs. Fold its useful
   specs (SPEC-002, SPEC-009) into these plugins' READMEs, then archive it.
+- test parking lot

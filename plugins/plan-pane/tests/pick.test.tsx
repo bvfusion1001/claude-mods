@@ -54,24 +54,6 @@ test('a picked plan beats the branch ticket', async ($, on) => {
   await ui.unmount()
 })
 
-test('a freeform plan has no DoD, and the DoD tab says so', async ($, on) => {
-  base(on, repo({ [BINDING]: JSON.stringify({ plan: FREE, root: '/r' }) }))
-  const ui = await openPane($)
-  await ui.press({ key: 'tab-dod' })
-  expect(await ui.find({ type: 'Markdown', text: /idea-x is a freeform plan/ })).toBeDefined()
-  expect(await ui.find({ key: 'dod-init' })).toBeUndefined()
-  await ui.unmount()
-})
-
-test('a bound ticket plan shows its own ledger', async ($, on) => {
-  base(on, repo({ [BINDING]: JSON.stringify({ plan: OTHER.replace('dod-checklist', 'build-plan'), root: '/r' }) }))
-  const ui = await openPane($)
-  expect(await ui.find({ key: 'pick', text: /Working on: PROJ-40$/ })).toBeDefined()
-  await ui.press({ key: 'tab-dod' })
-  expect(await ui.find({ type: 'Text', text: /○ other AC/ })).toBeDefined()
-  await ui.unmount()
-})
-
 test('no binding: the branch ticket, labelled as from the branch', async ($, on) => {
   base(on, repo())
   const ui = await openPane($)
@@ -172,5 +154,14 @@ test('Open full view writes the page beside the plan and opens it', async ($, on
   expect(writes).toContain(page)
   expect(files[page]).toContain('freeform item')
   expect(ran).toEqual([['open', page]])
+  await ui.unmount()
+})
+
+test('Parking Lot ideas show at the bottom of the pane', async ($, on) => {
+  const plan = '## Phase 1: Now\n\n- [ ] a\n\n## Parking Lot\n\n- Slack digest\n- Calendar view\n'
+  base(on, repo({ [BINDING]: JSON.stringify({ plan: FREE, root: '/r' }), [FREE]: plan }))
+  const ui = await openPane($)
+  expect(await ui.find({ type: 'Text', text: /^Parking Lot · 2$/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /Slack digest/ })).toBeDefined()
   await ui.unmount()
 })
