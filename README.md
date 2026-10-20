@@ -12,8 +12,6 @@ Claude Code plugins for long working sessions: a context band with one-press han
 
 ## Install
 
-You need read access to this repo, through your normal git login (`gh auth login`, then `gh auth setup-git`).
-
 ```bash
 claude plugin marketplace add bvfusion1001/claude-mods
 ```
