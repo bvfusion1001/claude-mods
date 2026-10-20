@@ -276,7 +276,8 @@ and each survives a Handoff.
 - [x] Dependencies, 2026-10-09: `context-band` needs `stash` and `plan-pane`; `plan-pane` needs
       `build-plan` and `dod`. One install pulls all five. An update doesn't install a newly added
       dependency, so Brad installed `stash` by hand.
-- [ ] Pick where the team gets it (open question 2), then share.
+- [x] Shared 2026-10-20: repo made public (history checked for client terms first), and an
+      install page with a one-paste prompt published for teammates.
 
 **Done when:** one teammate has it installed and used the Handoff button.
 
