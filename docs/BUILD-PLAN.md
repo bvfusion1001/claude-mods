@@ -135,7 +135,7 @@ runs the small loop; each phase runs the large one.
 **The loop (test first):** Discover, Design, Test (write the failing test), Build, Verify.
 
 - [x] `build-plan-init` - discovery, then writes the plan: phases, done conditions, Parking Lot.
-- [x] `build-plan-start` - finds the plan, reads it, resumes at the first unverified item. A handoff with
+- [x] `build-plan-resume` - finds the plan, reads it, resumes at the first unverified item. A handoff with
       the whole roadmap attached.
 - [x] `build-plan-add` - adds an item to a phase, or to the Parking Lot by default.
 - [x] `build-plan-next` - checks off the verified item and moves on.
@@ -147,9 +147,9 @@ runs the small loop; each phase runs the large one.
 - [x] Stash, resume and the drafter look in these `_local` paths too, not just `docs/BUILD-PLAN.md`.
       The drafter can't see the branch, so it finds `docs/_local/build-plan.md` but not ticket plans.
 - [x] Written 2026-10-07 at `~/.claude/skills/build-plan-*`. Not yet used on a real task.
-- [ ] Live: `build-plan-init` on a real task, then `build-plan-start` after a `/clear`.
+- [ ] Live: `build-plan-init` on a real task, then `build-plan-resume` after a `/clear`.
 
-**Done when:** a teammate can run `build-plan-init` on a fresh task and `build-plan-start` after a `/clear`.
+**Done when:** a teammate can run `build-plan-init` on a fresh task and `build-plan-resume` after a `/clear`.
 
 ## Phase 6: Plan and DoD side pane
 
@@ -215,7 +215,7 @@ restores it.
 - [x] `plan-pane`: "Working on" header with the picker, reads and writes the binding. (0.5.0)
 - [x] `context-band`: auto-tie on Write/Edit under a plan folder; drafter reads the binding. (0.9.0)
 - [ ] `build-plan-init`: asks ticket or freeform; freeform names the folder. (written, not run live)
-- [ ] `build-plan-start`, `stash`, `stash:resume`: use the binding first. (written, not run live;
+- [ ] `build-plan-resume`, `stash`, `stash:resume`: use the binding first. (written, not run live;
       they rely on `${CLAUDE_SESSION_ID}` being filled in inside skills)
 
 - [x] Fixed 2026-10-08: in a worktree the pane showed "No build plan" though the chat was tied

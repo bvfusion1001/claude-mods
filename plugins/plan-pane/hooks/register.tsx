@@ -315,7 +315,7 @@ export const register: Register = (on) => {
       // progress happens in chat; Resume only helps before the chat has started
       actions = (
         <Box>
-          {isFresh ? <>{action('plan-resume', 'Resume plan', 'build-plan:start')}<Text> </Text></> : null}
+          {isFresh ? <>{action('plan-resume', 'Resume plan', 'build-plan:resume')}<Text> </Text></> : null}
           <Button key="full-view" label="Open full view" plain onPress={() => openFullView($)} />
         </Box>
       )
@@ -364,7 +364,7 @@ function sectionsView(sections: Section[], Box: any, Text: any, Markdown: any, m
       <Box flexDirection="column" borderStyle="round" paddingX={1} marginY={1}>
         <Text bold color="cyan">{`▾ ${title}`}</Text>
         {s.items.map((it, j) => {
-          // the first open item is what build-plan:start resumes at
+          // the first open item is what build-plan:resume resumes at
           const isActive = marksActive && j === s.items.findIndex((x) => !x.isDone)
           const line = `${it.isDone ? '✓' : isActive ? '▶' : '○'} ${it.text}`
           // Text can't press a link; Markdown can

@@ -1,9 +1,9 @@
 ---
-name: build-plan-start
-description: Pick up a build plan where it left off - find the plan, read it, and resume at the first unchecked item. Use after a /clear or in a new session, or when the user says "build-plan start", "where are we on the plan", "resume the plan", "pick up the plan".
+name: build-plan-resume
+description: Pick up a build plan where it left off - find the plan, read it, and resume at the first unchecked item. Use after a /clear or in a new session, or when the user says "build-plan resume", "build-plan start", "where are we on the plan", "resume the plan", "pick up the plan".
 ---
 
-# build-plan-start
+# build-plan-resume
 
 ## Step 1: Find the plan
 

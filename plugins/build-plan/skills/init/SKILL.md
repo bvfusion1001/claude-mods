@@ -18,10 +18,10 @@ Ask one question first, unless the answer is plain: is this ticket work or freef
 - **Freeform** (no ticket, ideas worked through as a plan): `docs/_local/plans/<name>/build-plan.md`.
   `<name>` is a short kebab name, like a stash name. Propose one and let the user change it.
   Freeform plans get no DoD ledger: DoD belongs to tickets.
-- A plan already exists there: stop and offer `build-plan-start` instead.
+- A plan already exists there: stop and offer `build-plan-resume` instead.
 - Never write `docs/_local/build-plan.md`. That shared slot is retired.
 
-Writing the plan file ties this chat to it (see the binding in `build-plan-start`).
+Writing the plan file ties this chat to it (see the binding in `build-plan-resume`).
 
 Make sure the file is ignored: `git check-ignore -q <path>`. If not, add `**/_local/` to
 `.git/info/exclude` (local only, never commit a `.gitignore` change for this).

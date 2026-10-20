@@ -106,7 +106,7 @@ test('no Check off button; Resume plan shows only before the chat has started', 
   const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
   expect(await ui.find({ key: 'plan-next' })).toBeUndefined()
   await ui.press({ key: 'plan-resume' })
-  expect(sent).toContain('build-plan:start')
+  expect(sent).toContain('build-plan:resume')
   msgs.push({ role: 'user', text: 'go', toolUses: [] }, { role: 'assistant', text: 'ok', toolUses: [] })
   await $.turn.complete({ answer: '', durationMs: 0, isAborted: false, turnId: 't', reason: 'answer' })
   expect(await ui.find({ key: 'plan-resume' })).toBeUndefined()

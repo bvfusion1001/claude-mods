@@ -5,7 +5,7 @@ description: Add an item to the current build plan - into the Parking Lot by def
 
 # build-plan-add
 
-Find the plan the way `build-plan-start` does.
+Find the plan the way `build-plan-resume` does.
 
 - **Default: the Parking Lot.** A new idea mid-phase goes there, so the current phase doesn't creep.
 - **Into a phase** only when the user names it, or says it blocks the current phase.

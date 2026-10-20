@@ -5,7 +5,7 @@ description: Move items or phases in the build plan, or promote a Parking Lot it
 
 # build-plan-reorder
 
-Find the plan the way `build-plan-start` does.
+Find the plan the way `build-plan-resume` does.
 
 1. Make the move the user asked for. Keep each item's checkbox state and notes.
 2. Never delete an item. Something no longer wanted goes to the Parking Lot with a short reason.

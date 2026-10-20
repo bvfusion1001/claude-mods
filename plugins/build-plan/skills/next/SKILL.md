@@ -5,7 +5,7 @@ description: Check off the build plan item just verified and move to the next on
 
 # build-plan-next
 
-Find the plan the way `build-plan-start` does.
+Find the plan the way `build-plan-resume` does.
 
 ## Step 1: Check the current item is verified
 
