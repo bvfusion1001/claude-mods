@@ -1,8 +1,9 @@
 ---
+name: build-plan-init
 description: Start a build plan for a task - a short discovery, then a phased, top-to-bottom checklist with done conditions and a Parking Lot, saved as a gitignored local file. Use when starting multi-step work, or when the user says "build plan", "make a plan for this", "build-plan init", "plan this out".
 ---
 
-# build-plan:init
+# build-plan-init
 
 A build plan answers "what's next" across many steps. It is not a DoD ledger, which answers "is
 this one thing really done". A plan item may point at a DoD ledger.
@@ -17,10 +18,10 @@ Ask one question first, unless the answer is plain: is this ticket work or freef
 - **Freeform** (no ticket, ideas worked through as a plan): `docs/_local/plans/<name>/build-plan.md`.
   `<name>` is a short kebab name, like a stash name. Propose one and let the user change it.
   Freeform plans get no DoD ledger: DoD belongs to tickets.
-- A plan already exists there: stop and offer `build-plan:start` instead.
+- A plan already exists there: stop and offer `build-plan-start` instead.
 - Never write `docs/_local/build-plan.md`. That shared slot is retired.
 
-Writing the plan file ties this chat to it (see the binding in `build-plan:start`).
+Writing the plan file ties this chat to it (see the binding in `build-plan-start`).
 
 Make sure the file is ignored: `git check-ignore -q <path>`. If not, add `**/_local/` to
 `.git/info/exclude` (local only, never commit a `.gitignore` change for this).

@@ -1,8 +1,9 @@
 ---
+name: build-plan-start
 description: Pick up a build plan where it left off - find the plan, read it, and resume at the first unchecked item. Use after a /clear or in a new session, or when the user says "build-plan start", "where are we on the plan", "resume the plan", "pick up the plan".
 ---
 
-# build-plan:start
+# build-plan-start
 
 ## Step 1: Find the plan
 
@@ -17,7 +18,7 @@ Look in order, and use the first that exists:
 3. `docs/BUILD-PLAN.md` (older repo-level plans).
 
 None found: list every plan in the repo (`docs/*/specs/*/_local/build-plan.md`,
-`docs/_local/plans/*/build-plan.md`) and ask which, or offer `build-plan:init`.
+`docs/_local/plans/*/build-plan.md`) and ask which, or offer `build-plan-init`.
 
 Once picked, write the binding if it doesn't already name this plan.
 

@@ -1,10 +1,11 @@
 ---
+name: build-plan-reorder
 description: Move items or phases in the build plan, or promote a Parking Lot item into a phase. Use when the user says "reorder the plan", "move X before Y", "do that phase first", "pull that out of the parking lot", "build-plan reorder".
 ---
 
-# build-plan:reorder
+# build-plan-reorder
 
-Find the plan the way `build-plan:start` does.
+Find the plan the way `build-plan-start` does.
 
 1. Make the move the user asked for. Keep each item's checkbox state and notes.
 2. Never delete an item. Something no longer wanted goes to the Parking Lot with a short reason.

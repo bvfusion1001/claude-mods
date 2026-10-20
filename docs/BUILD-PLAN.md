@@ -127,29 +127,29 @@ Makes the final handoff nearly instant.
 
 **Done when:** resuming a stash mid-plan lands on the right plan item without being told.
 
-## Phase 5: `build-plan:` skill family
+## Phase 5: `build-plan-*` skill family
 
 A build plan is a top-to-bottom checklist you work through, edit, and reorder from chat. Each item
 runs the small loop; each phase runs the large one.
 
 **The loop (test first):** Discover, Design, Test (write the failing test), Build, Verify.
 
-- [x] `build-plan:init` - discovery, then writes the plan: phases, done conditions, Parking Lot.
-- [x] `build-plan:start` - finds the plan, reads it, resumes at the first unverified item. A handoff with
+- [x] `build-plan-init` - discovery, then writes the plan: phases, done conditions, Parking Lot.
+- [x] `build-plan-start` - finds the plan, reads it, resumes at the first unverified item. A handoff with
       the whole roadmap attached.
-- [x] `build-plan:add` - adds an item to a phase, or to the Parking Lot by default.
-- [x] `build-plan:next` - checks off the verified item and moves on.
-- [x] `build-plan:reorder` - moves items or phases, says what changed.
+- [x] `build-plan-add` - adds an item to a phase, or to the Parking Lot by default.
+- [x] `build-plan-next` - checks off the verified item and moves on.
+- [x] `build-plan-reorder` - moves items or phases, says what changed.
 - [x] Decide where plan files live: `_local` only, decided 2026-10-07. Ticket work:
       `docs/<area>/specs/<TICKET>/_local/build-plan.md`, beside the DoD ledger. No ticket:
-      `docs/_local/build-plan.md`. `build-plan:init` makes sure the path is gitignored (adds it to
+      `docs/_local/build-plan.md`. `build-plan-init` makes sure the path is gitignored (adds it to
       `.git/info/exclude` if not), so nothing gets committed by accident.
 - [x] Stash, resume and the drafter look in these `_local` paths too, not just `docs/BUILD-PLAN.md`.
       The drafter can't see the branch, so it finds `docs/_local/build-plan.md` but not ticket plans.
-- [x] Written 2026-10-07 at `~/.claude/skills/build-plan:*`. Not yet used on a real task.
-- [ ] Live: `build-plan:init` on a real task, then `build-plan:start` after a `/clear`.
+- [x] Written 2026-10-07 at `~/.claude/skills/build-plan-*`. Not yet used on a real task.
+- [ ] Live: `build-plan-init` on a real task, then `build-plan-start` after a `/clear`.
 
-**Done when:** a teammate can run `build-plan:init` on a fresh task and `build-plan:start` after a `/clear`.
+**Done when:** a teammate can run `build-plan-init` on a fresh task and `build-plan-start` after a `/clear`.
 
 ## Phase 6: Plan and DoD side pane
 
@@ -168,7 +168,7 @@ runs the small loop; each phase runs the large one.
 - [x] `plan-pane` 0.2.0, 12 tests pass:
       - **Toggle:** a "Plan & DoD" / "Hide plan" button above the prompt, hotkey `p` after
         `ctrl+x tab`. There's no keybinding action that runs a command, so no one-chord hotkey.
-      - **Plan tab:** no plan, "Start a build plan" runs `/build-plan:init`. With a plan,
+      - **Plan tab:** no plan, "Start a build plan" runs `/build-plan-init`. With a plan,
         "Check off & next" and "Resume plan".
       - **DoD tab:** no ledger on a ticket branch, "Start a DoD ledger" runs `/dod:init`. No ticket,
         it says so. With a ledger, "Check DoD" and "What next".
@@ -203,7 +203,7 @@ A repo can hold many plans at once: one per ticket, plus freeform ones. Each cha
 1. Picked: the pane's "Working on: <name>" opens a list of every plan in the repo, ticket and
    freeform. Picking one ties this chat to it.
 2. Automatic: a chat that creates or edits a file in a plan's folder ties itself to that plan.
-   `build-plan:init`, `dod:init` and `stash:resume` do this without extra steps.
+   `build-plan-init`, `dod:init` and `stash:resume` do this without extra steps.
 3. The branch's ticket.
 4. Nothing: the pane offers to pick one or start one.
 
@@ -214,8 +214,8 @@ restores it.
 - [x] Tests first: binding order, auto-tie on edit, picker list, freeform paths.
 - [x] `plan-pane`: "Working on" header with the picker, reads and writes the binding. (0.5.0)
 - [x] `context-band`: auto-tie on Write/Edit under a plan folder; drafter reads the binding. (0.9.0)
-- [ ] `build-plan:init`: asks ticket or freeform; freeform names the folder. (written, not run live)
-- [ ] `build-plan:start`, `stash`, `stash:resume`: use the binding first. (written, not run live;
+- [ ] `build-plan-init`: asks ticket or freeform; freeform names the folder. (written, not run live)
+- [ ] `build-plan-start`, `stash`, `stash:resume`: use the binding first. (written, not run live;
       they rely on `${CLAUDE_SESSION_ID}` being filled in inside skills)
 
 - [x] Fixed 2026-10-08: in a worktree the pane showed "No build plan" though the chat was tied
@@ -264,12 +264,12 @@ and each survives a Handoff.
 - [x] Each plugin has a README: what it does, how to install, its options. 2026-10-08.
 - [x] `claude plugin validate` and `claude plugin test` pass for all of them, no warnings. 2026-10-08.
 - [x] Skills shipped 2026-10-08 as three plugins, 0.1.0 each, so the names stay `/stash`,
-      `/stash:resume`, `/build-plan:init`, `/dod:check`: `stash`, `build-plan`, `dod`. Client
+      `/stash:resume`, `/build-plan-init`, `/dod:check`: `stash`, `build-plan`, `dod`. Client
       names, the personal billing step, and `~/.claude` paths removed. `dod` also ships the PR gate hook and
       `dod-ledger.sh`, tested against a sample repo. Brad doesn't install them: his personal
       copies would load beside them.
 - [x] Names checked 2026-10-08: a headless session with only the three plugins (`--setting-sources
-      project`) lists `build-plan:*`, `dod:*`, `stash:list|merge|resume|stash`.
+      project`) lists `build-plan-*`, `dod:*`, `stash:list|merge|resume|stash`.
 - [ ] Bare `/stash` from the plugin (docs say a `name:` override allows it). If not, the band's
       `stashCommand` must be `stash:stash` for teammates.
 - [x] `/stash` prunes bindings untouched for 30 days, beside the 7-day draft cleanup.
@@ -295,7 +295,7 @@ and each survives a Handoff.
    third-party marketplaces need auto-update turned on (`autoUpdate: true`, or `/plugin` >
    Marketplaces). Repo created 2026-10-09: private `bvfusion1001/claude-mods`. Teammates need
    collaborator access, or move it to an org later.
-3. ~~Family name.~~ Decided: `build-plan:` (Brad also floated `brad-plan`, but the team uses it).
+3. ~~Family name.~~ Decided: `build-plan-*` (Brad also floated `brad-plan`, but the team uses it).
 4. ~~The loop.~~ Confirmed: Discover, Design, Test, Build, Verify.
 
 ## Parking Lot

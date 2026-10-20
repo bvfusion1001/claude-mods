@@ -6,11 +6,11 @@ A build plan is a top-to-bottom checklist you work through from chat. Each item 
 
 | Skill | What it does |
 |---|---|
-| `/build-plan:init` | Short discovery, then writes phases, done conditions, and a Parking Lot |
-| `/build-plan:start` | Finds the plan and resumes at the first unverified item |
-| `/build-plan:add` | Adds an item to a phase, or to the Parking Lot by default |
-| `/build-plan:next` | Checks off the verified item and moves on |
-| `/build-plan:reorder` | Moves items or phases |
+| `/build-plan-init` | Short discovery, then writes phases, done conditions, and a Parking Lot |
+| `/build-plan-start` | Finds the plan and resumes at the first unverified item |
+| `/build-plan-add` | Adds an item to a phase, or to the Parking Lot by default |
+| `/build-plan-next` | Checks off the verified item and moves on |
+| `/build-plan-reorder` | Moves items or phases |
 
 ## Where plans live
 

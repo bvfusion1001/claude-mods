@@ -1,7 +1,7 @@
 {
   "name": "build-plan",
-  "version": "0.1.1",
-  "description": "Phased, test-first build plans you work top to bottom from chat. /build-plan:init, :start, :add, :next, :reorder.",
+  "version": "0.1.2",
+  "description": "Phased, test-first build plans you work top to bottom from chat. /build-plan-init, :start, :add, :next, :reorder.",
   "author": {
     "name": "Brad"
   }

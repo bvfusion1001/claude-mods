@@ -40,7 +40,7 @@ Also review the conversation: tasks worked on, key files touched, decisions made
 
 **Build plan and DoD.** Look for the plan and ledger this work follows:
 - Plan: the binding first, `~/.claude/stash/.bindings/<id>.json` (`<id>` from `session=<id>`, else
-  `${CLAUDE_SESSION_ID}`), its `plan` field. Else find it the way `build-plan:start` does, or the
+  `${CLAUDE_SESSION_ID}`), its `plan` field. Else find it the way `build-plan-start` does, or the
   plan the conversation has been working from. Note the current phase and first unchecked item.
 - DoD: `dod-checklist.md` beside a ticket plan, else `docs/*/specs/<TICKET>/_local/dod-checklist.md`
   with `<TICKET>` from the branch name (e.g. `PROJ-1234`). Freeform plans have none. Note the items

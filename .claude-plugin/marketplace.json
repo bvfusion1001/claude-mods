@@ -23,7 +23,7 @@
     {
       "name": "build-plan",
       "source": "./plugins/build-plan",
-      "description": "Phased, test-first build plans you work top to bottom from chat. /build-plan:init, :start, :add, :next, :reorder."
+      "description": "Phased, test-first build plans you work top to bottom from chat. /build-plan-init, :start, :add, :next, :reorder."
     },
     {
       "name": "dod",

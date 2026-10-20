@@ -1,10 +1,11 @@
 ---
+name: build-plan-next
 description: Check off the build plan item just verified and move to the next one. Use when the user says "build-plan next", "next plan item", "that's done, what's next", or after an item passes its Verify step.
 ---
 
-# build-plan:next
+# build-plan-next
 
-Find the plan the way `build-plan:start` does.
+Find the plan the way `build-plan-start` does.
 
 ## Step 1: Check the current item is verified
 
