@@ -181,6 +181,7 @@ runs the small loop; each phase runs the large one.
       primary, the other plain and dim, a divider line under them. 20 + 13 tests pass.
 - [x] What mods can draw is written down in `docs/UI-TOOLKIT.md`.
 - [ ] Seen live: the merged band, the toggle, the empty states, the tab look.
+- [x] Renamed 2026-10-20: band toggle is **Panel**, hotkey `p` (was Bradar, `b`).
 - [x] Renamed 2026-10-08: band toggle is **Bradar**, hotkey `b` (was "Plan & DoD", `p`). Pane
       title "Build Plan & DoD", tab "Build Plan". `context-band` 0.9.1, `plan-pane` 0.5.1.
 

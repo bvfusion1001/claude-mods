@@ -36,7 +36,7 @@ claude plugin marketplace add bvfusion1001/claude-mods
 claude plugin install plan-pane@claude-mods
 ```
 
-Start a new chat, then run `/plan-pane` to open or close it. The `context-band` Bradar button does the same.
+Start a new chat, then run `/plan-pane` to open or close it. The `context-band` Panel button does the same.
 
 ## Options
 

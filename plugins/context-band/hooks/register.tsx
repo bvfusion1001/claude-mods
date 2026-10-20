@@ -291,8 +291,8 @@ export const register: Register = (on, options) => {
         <Box gap={1}>
           <Button
             key="toggle-pane"
-            label="Bradar"
-            hotkey="b"
+            label="Panel"
+            hotkey="p"
             onPress={async () => {
               try {
                 await $.command.run({ command: paneCommand })

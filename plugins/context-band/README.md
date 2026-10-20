@@ -6,7 +6,7 @@ A band above the prompt that shows how full the context is, with a one-press Han
 
 - **Context zone.** Shows the token count with a dot: 🟢 hand off when ready, 🟡 plan a handoff, 🔴 hand off now.
 - **Usage limits.** Shows a 5-hour or weekly limit as its own line once it passes `limitsFrom`, with the reset time.
-- **Bradar button** (hotkey `b`). Opens or closes the `plan-pane` side pane.
+- **Panel button** (hotkey `p`). Opens or closes the `plan-pane` side pane.
 - **Handoff button.** Shows from `handoffFrom` tokens. One press stashes the session, runs `/clear`, then resumes from that stash. If the clear fails, the band says "Run /clear" and resumes after you do.
 - **Rolling draft.** Every `draftEvery` turns, and on each zone change, a cheap model updates a draft stash at `~/.claude/stash/.drafts/<session_id>.md`. This makes the final handoff fast. It never blocks the session.
 - **Plan tie.** Editing a file inside a build plan's folder ties this chat to that plan, so the draft and `/stash` know which plan you're on.
@@ -14,7 +14,7 @@ A band above the prompt that shows how full the context is, with a one-press Han
 ## Needs
 
 - The `stash` plugin. The Handoff button runs `/stash` and `/stash:resume`.
-- The `plan-pane` plugin, for the Bradar button.
+- The `plan-pane` plugin, for the Panel button.
 
 ## Install
 
@@ -40,4 +40,4 @@ Start a new chat to load it.
 | `draftModel` | haiku | Model that writes the draft |
 | `stashCommand` | stash | Skill the Handoff button runs |
 | `resumeCommand` | stash:resume | Skill that resumes after `/clear` |
-| `paneCommand` | plan-pane | Command the Bradar button runs |
+| `paneCommand` | plan-pane | Command the Panel button runs |

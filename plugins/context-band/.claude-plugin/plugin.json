@@ -1,7 +1,7 @@
 {
   "name": "context-band",
-  "version": "0.10.1",
-  "description": "Band above the prompt: context zone, a Bradar pane toggle, and a one-press Handoff with a rolling draft.",
+  "version": "0.10.2",
+  "description": "Band above the prompt: context zone, a Panel pane toggle, and a one-press Handoff with a rolling draft.",
   "author": {
     "name": "Brad"
   },
@@ -20,7 +20,7 @@
     "paneCommand": {
       "type": "string",
       "title": "Pane command",
-      "description": "Command the Bradar button runs, without the slash.",
+      "description": "Command the Panel button runs, without the slash.",
       "default": "plan-pane"
     },
     "yellowAt": {
