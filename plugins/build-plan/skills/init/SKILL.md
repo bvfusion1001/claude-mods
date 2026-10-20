@@ -44,7 +44,7 @@ Check an item off only once it is verified.
 ## Phase 1: <name>
 
 - [ ] <one verifiable item>
-- [ ] <item> (DoD: `<path to dod-checklist.md>`), when it maps to one
+- [ ] <item> (DoD: `<path to dod-ledger.md>`), when it maps to one
 
 **Done when:** <one observable condition>
 

@@ -3,14 +3,16 @@ import { test, expect } from 'claude-code/testing'
 const PANE = { component: 'Pane', requestId: 'plan-pane', props: {} } as const
 const BINDING = '/home/b/.claude/stash/.bindings/sid-1.json'
 const TICKET = '/r/docs/billing/specs/PROJ-12/_local/build-plan.md'
-const OTHER = '/r/docs/billing/specs/PROJ-40/_local/dod-checklist.md'
+const OTHER = '/r/docs/billing/specs/PROJ-40/_local/dod-ledger.md'
 const FREE = '/r/docs/_local/plans/idea-x/build-plan.md'
+const LEDGER = '/r/docs/billing/specs/PROJ-12/_local/dod-ledger.md'
+const OLD_LEDGER = '/r/docs/billing/specs/PROJ-12/_local/dod-checklist.md'
 
 function repo(extra: Record<string, string> = {}): Record<string, string> {
   return {
     '/r/.git/HEAD': 'ref: refs/heads/d/PROJ-12-thing\n',
     [TICKET]: '## Phase 1: Ticket work\n\n- [ ] ticket item\n',
-    '/r/docs/billing/specs/PROJ-12/_local/dod-checklist.md': '### AC\n- [ ] AC1\n',
+    [LEDGER]: '### AC\n- [ ] AC1\n',
     [OTHER]: '### AC\n- [ ] other AC\n',
     [FREE]: '## Phase 1: Ideas\n\n- [x] sketch\n- [ ] freeform item\n',
     '/r/docs/BUILD-PLAN.md': '## Phase 1: Legacy\n\n- [ ] legacy item\n',
@@ -20,14 +22,14 @@ function repo(extra: Record<string, string> = {}): Record<string, string> {
 
 const isDir = (files: Record<string, string>, p: string) => Object.keys(files).some((k) => k.startsWith(`${p}/`))
 
-function base(on: any, files: Record<string, string>, writes: string[] = []) {
+function base(on: any, files: Record<string, string>, writes: string[] = [], reads: string[] = []) {
   on('session.cwd', () => ({ value: '/r' }))
   on('session.id', () => ({ value: 'sid-1' }))
   on('env.get', () => ({ value: '/home/b' }))
   on('session.repo', () => ({ value: { root: '/r', remote: null, internal: false } }))
   on('fs.exists', (_$: any, e: any) => ({ value: e.path in files || isDir(files, e.path) }))
   on('fs.stat', (_$: any, e: any) => ({ value: { kind: isDir(files, e.path) ? 'dir' : 'file', size: 1, mtimeMs: 1, isLink: false } }))
-  on('fs.read', (_$: any, e: any) => ({ value: files[e.path] }))
+  on('fs.read', (_$: any, e: any) => { reads.push(e.path); return { value: files[e.path] } })
   on('fs.write', (_$: any, e: any) => { files[e.path] = e.text; writes.push(e.path); return { value: undefined } })
   on('fs.list', (_$: any, e: any) => {
     const names = new Set<string>()
@@ -35,6 +37,7 @@ function base(on: any, files: Record<string, string>, writes: string[] = []) {
     return { value: [...names].map((name) => ({ name, kind: isDir(files, `${e.path}/${name}`) ? 'dir' : 'file', size: 0, mtimeMs: 0, isLink: false })) }
   })
   on('command.register', () => ({ value: undefined }))
+  on('command.list', () => ({ value: ['build-plan:init', 'build-plan:resume'].map((name) => ({ name, description: '', source: 'plugin', plugin: 'build-plan' })) }))
   on('ui.open', () => ({ value: { opened: true } }))
   on('command.run', () => ({}))
   on('clock.sleep', () => new Promise(() => {}))
@@ -163,5 +166,45 @@ test('Parking Lot ideas show at the bottom of the pane', async ($, on) => {
   const ui = await openPane($)
   expect(await ui.find({ type: 'Text', text: /^Parking Lot · 2$/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /Slack digest/ })).toBeDefined()
+  await ui.unmount()
+})
+
+test('a ticket with only the older dod-checklist.md still finds its ledger', async ($, on) => {
+  const reads: string[] = []
+  const files = repo({ [OLD_LEDGER]: '### AC\n- [ ] old AC\n' })
+  delete files[LEDGER]
+  base(on, files, [], reads)
+  const ui = await openPane($)
+  expect(reads).toContain(OLD_LEDGER)
+  await ui.unmount()
+})
+
+test('with both ledger names, dod-ledger.md wins', async ($, on) => {
+  const reads: string[] = []
+  base(on, repo({ [OLD_LEDGER]: '### AC\n- [ ] old AC\n' }), [], reads)
+  const ui = await openPane($)
+  expect(reads).toContain(LEDGER)
+  expect(reads).not.toContain(OLD_LEDGER)
+  await ui.unmount()
+})
+
+test('a picked ticket plan finds its ledger by either name', async ($, on) => {
+  const reads: string[] = []
+  const plan40 = '/r/docs/billing/specs/PROJ-40/_local/build-plan.md'
+  const old40 = '/r/docs/billing/specs/PROJ-40/_local/dod-checklist.md'
+  const files = repo({ [BINDING]: JSON.stringify({ plan: plan40, root: '/r' }), [plan40]: '## Phase 1: P\n\n- [ ] x\n', [old40]: '### AC\n' })
+  delete files[OTHER]
+  base(on, files, [], reads)
+  const ui = await openPane($)
+  expect(reads).toContain(old40)
+  await ui.unmount()
+})
+
+test('the picker lists a ticket folder that holds only an older dod-checklist.md', async ($, on) => {
+  const files = repo({ '/r/docs/billing/specs/PROJ-77/_local/dod-checklist.md': '### AC\n' })
+  base(on, files)
+  const ui = await openPane($)
+  await ui.press({ key: 'pick' })
+  expect(await ui.find({ key: 'pick-PROJ-77' })).toBeDefined()
   await ui.unmount()
 })

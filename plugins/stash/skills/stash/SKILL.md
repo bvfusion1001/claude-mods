@@ -42,8 +42,8 @@ Also review the conversation: tasks worked on, key files touched, decisions made
 - Plan: the binding first, `~/.claude/stash/.bindings/<id>.json` (`<id>` from `session=<id>`, else
   `${CLAUDE_SESSION_ID}`), its `plan` field. Else find it the way `build-plan-resume` does, or the
   plan the conversation has been working from. Note the current phase and first unchecked item.
-- DoD: `dod-checklist.md` beside a ticket plan, else `docs/*/specs/<TICKET>/_local/dod-checklist.md`
-  with `<TICKET>` from the branch name (e.g. `PROJ-1234`). Freeform plans have none. Note the items
+- DoD: `dod-ledger.md` beside a ticket plan, else `docs/*/specs/<TICKET>/_local/dod-ledger.md`
+  with `<TICKET>` from the branch name (e.g. `PROJ-1234`). Older ledgers are `dod-checklist.md`. Freeform plans have none. Note the items
   not yet verified.
 Record what you find in the frontmatter (Step 4). Skip the fields when nothing is found.
 
@@ -94,7 +94,7 @@ worktree: /Users/me/.claude/worktrees/xyz   # only if different from repo_path
 branch: feature/PROJ-123
 build_plan: docs/BUILD-PLAN.md               # omit if none
 plan_item: "Phase 3: rolling draft at ~/.claude/stash/.drafts"  # current phase and item
-dod: docs/auth/specs/PROJ-123/_local/dod-checklist.md         # omit if none
+dod: docs/auth/specs/PROJ-123/_local/dod-ledger.md            # omit if none
 wip_commit: abc1234                          # omit if clean
 changes: clean | wip-commit | left-in-place
 summary: One-sentence semantic summary of what this session is doing.

@@ -20,7 +20,15 @@ claude plugin marketplace add bvfusion1001/claude-mods
 claude plugin install context-band@claude-mods
 ```
 
-That pulls in the other three: `plan-pane`, `stash` and `build-plan`. Start a new chat to load them.
+That pulls in `plan-pane` and `stash`. Add the build-plan skills too:
+
+```bash
+claude plugin install build-plan@claude-mods
+```
+
+Start a new chat to load them.
+
+If your team's repos already ship their own build-plan and DoD skills, install only `context-band`, `plan-pane` and `stash`, and skip `build-plan` and `dod`. The pane runs the repo's build-plan skills when they're present.
 
 ## Get updates
 

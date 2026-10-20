@@ -5,7 +5,7 @@ paths:
 
 # Definition-of-Done Awareness
 
-When doing substantive ticket work in `force-app/`, keep the ticket's Definition-of-Done ledger in mind. The ledger is maintained by the `dod:` skill family and lives at `docs/<area>/specs/<TICKET>/_local/dod-checklist.md` (gitignored, local-only). This rule is advisory — it does not execute or persist anything; the skills do that.
+When doing substantive ticket work in `force-app/`, keep the ticket's Definition-of-Done ledger in mind. The ledger is maintained by the `dod:` skill family and lives at `docs/<area>/specs/<TICKET>/_local/dod-ledger.md` (gitignored, local-only; older ledgers are `dod-checklist.md`). This rule is advisory, it does not execute or persist anything; the skills do that.
 
 ## What to do
 

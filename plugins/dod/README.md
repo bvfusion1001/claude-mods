@@ -21,7 +21,7 @@ Before `gh pr create` or `gh pr ready`, a hook reads the ledger. If it isn't all
 
 - The ticket is the first `ABC-123` style id in the branch name.
 - The policy template is tuned for Salesforce repos. `/dod:adopt` swaps those items for your repo's own checks.
-- Ledgers live at `docs/<area>/specs/<TICKET>/_local/dod-checklist.md` and are never committed.
+- Ledgers live at `docs/<area>/specs/<TICKET>/_local/dod-ledger.md` and are never committed. An older `dod-checklist.md` there is still read.
 - Needs `git` and `jq` for the PR gate.
 
 ## Install

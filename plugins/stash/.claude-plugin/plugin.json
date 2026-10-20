@@ -1,6 +1,6 @@
 {
   "name": "stash",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Stash a session's context and git state, then resume it exactly, from any tool. /stash, /stash:resume, /stash:list, /stash:merge.",
   "author": {
     "name": "Brad"

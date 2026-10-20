@@ -24,9 +24,13 @@ export function planName(plan: string): string {
     ?? plan.split('/').pop()!
 }
 
+// ledger names, first found wins; dod-checklist.md is the older name
+export const DOD_FILES = ['dod-ledger.md', 'dod-checklist.md']
+
 // DoD belongs to tickets, so only a ticket plan has a ledger
-export function dodFor(plan: string): string | undefined {
-  return /\/specs\/[^/]+\/_local\/build-plan\.md$/.test(plan) ? plan.replace(/build-plan\.md$/, 'dod-checklist.md') : undefined
+export function dodFor(plan: string): string[] | undefined {
+  if (!/\/specs\/[^/]+\/_local\/build-plan\.md$/.test(plan)) return undefined
+  return DOD_FILES.map((f) => plan.replace(/build-plan\.md$/, f))
 }
 
 export function parseBinding(text: string | undefined, root: string): Binding | undefined {

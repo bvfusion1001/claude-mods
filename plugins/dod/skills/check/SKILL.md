@@ -14,10 +14,10 @@ This is the verb the realtime layer points at: the statusline renders the ledger
 
 ## Step 0 — Locate the ledger
 
-1. Resolve the ticket from the branch (`feature/PROJ-####` → `PROJ-####`), then find `docs/**/specs/<TICKET>/_local/dod-checklist.md` (the ledger lives in the ticket's gitignored `_local/` folder while the DoD system is local-only).
+1. Resolve the ticket from the branch (`feature/PROJ-####` → `PROJ-####`), then find `docs/**/specs/<TICKET>/_local/dod-ledger.md`, else the older `dod-checklist.md` (the ledger lives in the ticket's gitignored `_local/` folder while the DoD system is local-only).
    > **Locating it:** do not use `find`/`rg`/`fd` — `_local/` is gitignored, so those return nothing with exit 0 and read as "no ledger". Use literal globs:
    > ```bash
-   > bash -c 'T="<TICKET>"; for f in docs/*/specs/$T/_local/dod-checklist.md docs/*/*/specs/$T/_local/dod-checklist.md; do [ -f "$f" ] && echo "$f"; done; exit 0'
+   > bash -c 'T="<TICKET>"; for n in dod-ledger.md dod-checklist.md; do for f in docs/*/specs/$T/_local/$n docs/*/*/specs/$T/_local/$n; do [ -f "$f" ] && echo "$f"; done; done; exit 0'
    > ```
 
 2. If none exists, tell the user and offer to run `dod:init` first. Stop.

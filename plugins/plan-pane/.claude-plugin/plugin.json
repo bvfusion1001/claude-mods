@@ -1,12 +1,9 @@
 {
   "name": "plan-pane",
-  "version": "0.7.2",
+  "version": "0.7.4",
   "description": "Side pane with the chat's build plan, a Parking Lot box, and a full-page view. /plan-pane, or the band's Panel button, toggles it.",
   "author": {
     "name": "Brad"
   },
-  "dependencies": [
-    "build-plan"
-  ],
   "types": "./types/index.d.ts"
 }

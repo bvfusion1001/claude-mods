@@ -30,7 +30,9 @@ ticket="$(printf '%s' "$branch" | grep -oE '[A-Z]{2,}-[0-9]+' | head -1)"
 [ -n "$ticket" ] || emit_none
 
 [ -d "$dir/docs" ] || emit_none
-ledger="$(find "$dir/docs" -path "*/specs/$ticket/_local/dod-checklist.md" 2>/dev/null | head -1)"
+ledger="$(find "$dir/docs" -path "*/specs/$ticket/_local/dod-ledger.md" 2>/dev/null | head -1)"
+# older ledgers are named dod-checklist.md
+[ -n "$ledger" ] || ledger="$(find "$dir/docs" -path "*/specs/$ticket/_local/dod-checklist.md" 2>/dev/null | head -1)"
 [ -n "$ledger" ] && [ -f "$ledger" ] || emit_none
 
 # Count statuses over markdown list items in the checklist section only

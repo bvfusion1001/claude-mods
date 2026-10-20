@@ -5,10 +5,10 @@ const FILES: Record<string, string> = {
   '/r/.git': '',
   '/r/.git/HEAD': 'ref: refs/heads/d/PROJ-12-thing\n',
   '/r/docs/billing/specs/PROJ-12/_local/build-plan.md': '## Phase 1: Do\n\n- [x] a\n- [ ] Next thing\n\n## Phase 2: Later\n\n- [ ] b\n',
-  '/r/docs/billing/specs/PROJ-12/_local/dod-checklist.md': '### Acceptance criteria\n- [x] AC1 works\n- [ ] AC2 tested\n',
+  '/r/docs/billing/specs/PROJ-12/_local/dod-ledger.md': '### Acceptance criteria\n- [x] AC1 works\n- [ ] AC2 tested\n',
 }
 
-function base(on: any, repoFails = false, sent: string[] = []) {
+function base(on: any, repoFails = false, sent: string[] = [], plugin = ['build-plan:init', 'build-plan:resume'], repoFiles: string[] = []) {
   on('session.cwd', () => {
     if (repoFails) throw new Error('no cwd here')
     return { value: '/r' }
@@ -17,13 +17,14 @@ function base(on: any, repoFails = false, sent: string[] = []) {
     if (repoFails) throw new Error('no repo here')
     return { value: { root: '/r', remote: null, internal: false } }
   })
-  on('fs.exists', (_$: any, e: any) => ({ value: e.path in FILES || e.path === '/r/docs' }))
+  on('fs.exists', (_$: any, e: any) => ({ value: e.path in FILES || e.path === '/r/docs' || repoFiles.includes(e.path) }))
   on('fs.stat', (_$: any, e: any) => ({ value: { kind: e.path === '/r/.git' ? 'dir' : 'file', size: 1, mtimeMs: 1, isLink: false } }))
   on('fs.read', (_$: any, e: any) => ({ value: FILES[e.path] }))
   on('fs.list', (_$: any, e: any) => ({
     value: e.path === '/r/docs' ? [{ name: 'billing', kind: 'dir', size: 0, mtimeMs: 0, isLink: false }] : [],
   }))
   on('command.register', () => ({ value: undefined }))
+  on('command.list', () => ({ value: plugin.map((name) => ({ name, description: '', source: 'plugin', plugin: 'build-plan' })) }))
   on('ui.open', (_$: any, e: any) => { sent.push(`open ${e.id}`); return { value: { opened: true } } })
   on('ui.close', (_$: any, e: any) => { sent.push(`close ${e.id}`); return { value: undefined } })
   on('command.run', (_$: any, e: any) => { sent.push(e.command); return {} })
@@ -109,6 +110,28 @@ test('no Check off button; Resume plan shows only before the chat has started', 
   expect(sent).toContain('build-plan:resume')
   msgs.push({ role: 'user', text: 'go', toolUses: [] }, { role: 'assistant', text: 'ok', toolUses: [] })
   await $.turn.complete({ answer: '', durationMs: 0, isAborted: false, turnId: 't', reason: 'answer' })
+  expect(await ui.find({ key: 'plan-resume' })).toBeUndefined()
+  expect(await ui.find({ key: 'full-view' })).toBeDefined()
+  await ui.unmount()
+})
+
+test('Resume runs the repo\'s build-plan-resume when the repo ships one', async ($, on) => {
+  const sent: string[] = []
+  base(on, false, sent, [], ['/r/.claude/skills/build-plan-resume/SKILL.md'])
+  on('session.messages', () => ({ value: [] }))
+  await $.command.run({ command: 'plan-pane', args: '' })
+  const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
+  await ui.press({ key: 'plan-resume' })
+  expect(sent).toContain('build-plan-resume')
+  expect(sent).not.toContain('build-plan:resume')
+  await ui.unmount()
+})
+
+test('no resume skill anywhere: no Resume button', async ($, on) => {
+  base(on, false, [], [])
+  on('session.messages', () => ({ value: [] }))
+  await $.command.run({ command: 'plan-pane', args: '' })
+  const ui = await $.ui.mount({ plugin: 'plan-pane', surface: 'desktop', ...PANE })
   expect(await ui.find({ key: 'plan-resume' })).toBeUndefined()
   expect(await ui.find({ key: 'full-view' })).toBeDefined()
   await ui.unmount()

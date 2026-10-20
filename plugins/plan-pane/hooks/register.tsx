@@ -1,8 +1,8 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { Doc, Section, Tab, Working } from '../types'
-import { bindingPath, dodFor, parseBinding, planName, workRoot } from './binding'
+import type { Doc, Section, Skills, Step, Tab, Working } from '../types'
+import { bindingPath, DOD_FILES, dodFor, parseBinding, planName, workRoot } from './binding'
 import { addToParkingLot, fullViewHtml, fullViewPath, parseFull } from './fullview'
 import { branchFromHead, currentIndex, parseChecklist, progress, progressBarSvg, progressBarText, ticketFromBranch } from './parse'
 
@@ -21,6 +21,7 @@ A build plan is the roadmap for work that takes more than one sitting. It's a lo
 const DOD_SOON = `**Definition of Done is not implemented yet.**
 
 This tab will show the ticket's DoD ledger: the checklist that proves a ticket is really done, with each item marked verified, weak or missing. It's coming in a later version.`
+const NO_SKILLS = 'No build-plan skills here: add them to this repo, or install the build-plan plugin.'
 const POLL_MS = 3_000
 
 const plan = atom({ plugin: 'plan-pane', key: 'plan' } as const, null as Doc)
@@ -35,6 +36,7 @@ const pickerAtom = atom({ plugin: 'plan-pane', key: 'picker' } as const, null as
 const foundAtom = atom({ plugin: 'plan-pane', key: 'found' } as const, [] as string[])
 // a chat with no reply yet is where Resume plan helps
 const freshAtom = atom({ plugin: 'plan-pane', key: 'isFresh' } as const, true)
+const skillsAtom = atom({ plugin: 'plan-pane', key: 'skills' } as const, { init: null, resume: null } as Skills)
 
 let isOpen = false
 let isPolling = false
@@ -91,7 +93,7 @@ async function locate($: EngineInterface): Promise<Found> {
       root,
       ticket: dod ? planName(bound.plan) : undefined,
       plan: await existing($, [bound.plan]),
-      dod: dod ? await existing($, [dod]) : undefined,
+      dod: dod ? await existing($, dod) : undefined,
       working: { name: planName(bound.plan), source: 'picked', isFreeform: !dod },
       stamp: bText ?? '',
     }
@@ -103,7 +105,7 @@ async function locate($: EngineInterface): Promise<Found> {
   const working: Working = ticket ? { name: `${ticket} (branch)`, source: 'branch', isFreeform: false }
     : plan ? { name: planName(plan), source: 'legacy', isFreeform: false }
     : NOTHING
-  return { root, ticket, plan, dod: await existing($, ticketDir('dod-checklist.md')), working, stamp: '' }
+  return { root, ticket, plan, dod: await existing($, DOD_FILES.flatMap(ticketDir)), working, stamp: '' }
 }
 
 // every plan in the repo: ticket folders, freeform folders, the legacy file
@@ -116,7 +118,7 @@ async function listPlans($: EngineInterface, root: string): Promise<string[]> {
       const dir = `${specs}/${t.name}/_local`
       if (t.kind !== 'dir' || !(await $.fs.exists(dir))) continue
       const names = (await $.fs.list(dir)).map((f) => f.name)
-      if (names.includes('build-plan.md') || names.includes('dod-checklist.md')) plans.push(`${dir}/build-plan.md`)
+      if (['build-plan.md', ...DOD_FILES].some((f) => names.includes(f))) plans.push(`${dir}/build-plan.md`)
     }
   }
   const free = `${root}/docs/_local/plans`
@@ -155,7 +157,8 @@ async function refresh($: EngineInterface) {
   const found = await locate($)
   const others = found.plan ? [] : await listPlans($, found.root)
   const isFresh = await freshChat($)
-  const stamps: string[] = [String(isFresh), found.stamp, found.working.name, found.ticket ?? '', found.plan ?? '', found.dod ?? '', ...others]
+  const skills: Skills = { init: await planSkill($, 'init'), resume: await planSkill($, 'resume') }
+  const stamps: string[] = [String(isFresh), skills.init ?? '', skills.resume ?? '', found.stamp, found.working.name, found.ticket ?? '', found.plan ?? '', found.dod ?? '', ...others]
   for (const p of [found.plan, found.dod]) if (p) stamps.push(String((await $.fs.stat(p)).mtimeMs))
   const key = stamps.join('|')
   if (key === seen) return
@@ -168,6 +171,7 @@ async function refresh($: EngineInterface) {
   await update($, workingAtom, () => found.working)
   await update($, foundAtom, () => others)
   await update($, freshAtom, () => isFresh)
+  await update($, skillsAtom, () => skills)
   shown = found.plan ? { plan: found.plan, root: found.root } : undefined
   // keep an open full view current
   if (shown && (await $.fs.exists(fullViewPath(shown.plan, shown.root)))) await writeFullView($)
@@ -232,8 +236,22 @@ async function close($: EngineInterface) {
   await $.ui.close({ id: PANE })
 }
 
-async function runSkill($: EngineInterface, command: string) {
-  await $.command.run({ command })
+// the repo's own build-plan skills win, so the plugin is optional
+async function planSkill($: EngineInterface, step: Step): Promise<string | null> {
+  if (await $.fs.exists(`${await rootOf($)}/.claude/skills/build-plan-${step}/SKILL.md`)) return `build-plan-${step}`
+  let names: string[] = []
+  try {
+    names = (await $.command.list()).map((c) => c.name)
+  } catch {}
+  return names.includes(`build-plan:${step}`) ? `build-plan:${step}` : null
+}
+
+// picked at press time, since skills can appear after the pane draws
+async function runSkill($: EngineInterface, step: Step) {
+  const command = await planSkill($, step)
+  if (command) return $.command.run({ command })
+  await $.ui.toast(NO_SKILLS)
+  await refresh($)
 }
 
 async function toggle($: EngineInterface): Promise<string> {
@@ -296,15 +314,15 @@ export const register: Register = (on) => {
     const picker = await read($, pickerAtom)
     const others = await read($, foundAtom)
     const isFresh = await read($, freshAtom)
-    const run = (command: string) => () => runSkill($, command)
-    const action = (key: string, label: string, command: string) => (
-      <Button key={key} label={label} onPress={run(command)} />
-    )
+    const skills = await read($, skillsAtom)
+    const action = (key: string, label: string, step: Step) => skills[step]
+      ? <Button key={key} label={label} onPress={() => runSkill($, step)} />
+      : <Text key={`${key}-none`} dimColor>{NO_SKILLS}</Text>
 
     let empty: any = null
     let actions: any = null
     if (current === 'plan') {
-      const start = action('plan-init', 'Start a build plan', 'build-plan:init')
+      const start = action('plan-init', 'Start a build plan', 'init')
       empty = others.length
         ? <Box flexDirection="column" gap={1}>
             <Markdown text={`**No build plan tied to this chat.** ${others.length} build plan${others.length === 1 ? '' : 's'} in this repo. Pick one, or start a new one.`} />
@@ -315,7 +333,7 @@ export const register: Register = (on) => {
       // progress happens in chat; Resume only helps before the chat has started
       actions = (
         <Box>
-          {isFresh ? <>{action('plan-resume', 'Resume plan', 'build-plan:resume')}<Text> </Text></> : null}
+          {isFresh && skills.resume ? <>{action('plan-resume', 'Resume plan', 'resume')}<Text> </Text></> : null}
           <Button key="full-view" label="Open full view" plain onPress={() => openFullView($)} />
         </Box>
       )

@@ -1,5 +1,5 @@
 ---
-description: Scaffold a tailored Definition-of-Done checklist for a ticket at the start of work. Reads the JIRA ticket + branch + diff, proposes a tailored item subset from the repo's .claude/dod-policy.yml, and writes a per-ticket ledger at docs/<area>/specs/<TICKET>/_local/dod-checklist.md (gitignored, local-only for now). Use when starting a ticket, or when the user says "dod init", "start a dod checklist", "set up the definition of done".
+description: Scaffold a tailored Definition-of-Done checklist for a ticket at the start of work. Reads the JIRA ticket + branch + diff, proposes a tailored item subset from the repo's .claude/dod-policy.yml, and writes a per-ticket ledger at docs/<area>/specs/<TICKET>/_local/dod-ledger.md (gitignored, local-only for now). Use when starting a ticket, or when the user says "dod init", "start a dod checklist", "set up the definition of done".
 ---
 
 # dod:init — scaffold the Definition-of-Done ledger
@@ -28,7 +28,7 @@ The item set, requiredness, triggers, verifiers, and canonical paths are **defin
 
 1. Resolve the ticket id first (Step 1's branch parse is enough — you do not need JIRA for this check), then look for an existing ledger anywhere under the areas root, since the owning area may differ from what you would infer today:
    ```bash
-   bash -c 'T="<TICKET>"; for f in docs/*/specs/$T/_local/dod-checklist.md docs/*/*/specs/$T/_local/dod-checklist.md docs/*/*/*/specs/$T/_local/dod-checklist.md; do [ -f "$f" ] && echo "$f"; done; exit 0'
+   bash -c 'T="<TICKET>"; for n in dod-ledger.md dod-checklist.md; do for f in docs/*/specs/$T/_local/$n docs/*/*/specs/$T/_local/$n docs/*/*/*/specs/$T/_local/$n; do [ -f "$f" ] && echo "$f"; done; done; exit 0'
    ```
    (Substitute the policy's `{areas_root}` / `{checklist_file}` if they differ from the defaults. The three globs cover areas nested up to three deep; add another for deeper nesting.)
 
@@ -74,7 +74,7 @@ The ledger lives in the **most-specific** doc area the work falls under (per `.c
 2. Infer the area from the touched code + existing `docs/<feature>[/<sub-feature>]/` folders. Prefer an existing area; propose creating a new one only if nothing fits.
 3. **Confirm the area with the user** before writing (e.g. "Owning area: `billing/invoices` — correct?").
 
-The ledger path is `{areas_root}/{spec_path}/{checklist_file}` from the policy, i.e. by default `docs/<area>/specs/<TICKET>/_local/dod-checklist.md` — inside the ticket's gitignored `_local/` folder (local-only while the DoD system is personal).
+The ledger path is `{areas_root}/{spec_path}/{checklist_file}` from the policy, i.e. by default `docs/<area>/specs/<TICKET>/_local/dod-ledger.md`, inside the ticket's gitignored `_local/` folder (local-only while the DoD system is personal).
 
 ---
 

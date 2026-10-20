@@ -11,7 +11,7 @@
 # --- Layout (paths are resolved by dod:init) -------------------------------
 areas_root: docs                       # where doc areas live
 spec_path: "{area}/specs/{ticket}"     # per-ticket folder, relative to areas_root
-checklist_file: _local/dod-checklist.md   # under the ticket's gitignored _local/ (local-only while DoD is personal)
+checklist_file: _local/dod-ledger.md      # under the ticket's gitignored _local/ (local-only while DoD is personal)
 commit_checklist: never                # never | ask | always. Ledger is gitignored; set to ask/always only once DoD ships and the ledger moves out of _local/
 
 # --- Requiredness ----------------------------------------------------------

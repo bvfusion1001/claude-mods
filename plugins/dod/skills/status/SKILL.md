@@ -11,10 +11,10 @@ Print where a ticket stands. This verb **only reads and prints** — it never ve
 ## Steps
 
 1. Resolve the ticket from the branch (`feature/PROJ-####` → `PROJ-####`), or take a ticket id / path argument if the user gave one.
-2. Find the ledger: `docs/**/specs/<TICKET>/_local/dod-checklist.md` (gitignored `_local/` folder). If none, say so and suggest `dod:init`. Stop.
+2. Find the ledger: `docs/**/specs/<TICKET>/_local/dod-ledger.md`, else the older `dod-checklist.md` (gitignored `_local/` folder). If none, say so and suggest `dod:init`. Stop.
    > **Locating it:** do not use `find`/`rg`/`fd` — `_local/` is gitignored, so those return nothing with exit 0 and read as "no ledger". Use literal globs:
    > ```bash
-   > bash -c 'T="<TICKET>"; for f in docs/*/specs/$T/_local/dod-checklist.md docs/*/*/specs/$T/_local/dod-checklist.md; do [ -f "$f" ] && echo "$f"; done; exit 0'
+   > bash -c 'T="<TICKET>"; for n in dod-ledger.md dod-checklist.md; do for f in docs/*/specs/$T/_local/$n docs/*/*/specs/$T/_local/$n; do [ -f "$f" ] && echo "$f"; done; done; exit 0'
    > ```
 
 3. Parse the frontmatter and the checklist items (grouped by category, each carrying an `id` + status emoji).

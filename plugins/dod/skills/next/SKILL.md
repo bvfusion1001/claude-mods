@@ -13,10 +13,10 @@ Companion verbs: `dod:init` scaffolds, `dod:status` glances, `dod:check` verifie
 ## Step 0 — Load state
 
 1. Read `.claude/dod-policy.yml`. If absent, this repo hasn't adopted DoD — say so, offer `dod:init` (which scaffolds the policy). Stop.
-2. Locate the ledger: `docs/**/specs/<TICKET>/_local/dod-checklist.md` (ticket from branch, `feature/PROJ-####` → `PROJ-####`). No ledger → phase is **define**; recommend `dod:init` and stop.
+2. Locate the ledger: `docs/**/specs/<TICKET>/_local/dod-ledger.md`, else the older `dod-checklist.md` (ticket from branch, `feature/PROJ-####` → `PROJ-####`). No ledger → phase is **define**; recommend `dod:init` and stop.
    > **Locating it:** do not use `find`/`rg`/`fd` — `_local/` is gitignored, so those return nothing with exit 0 and read as "no ledger". Use literal globs:
    > ```bash
-   > bash -c 'T="<TICKET>"; for f in docs/*/specs/$T/_local/dod-checklist.md docs/*/*/specs/$T/_local/dod-checklist.md; do [ -f "$f" ] && echo "$f"; done; exit 0'
+   > bash -c 'T="<TICKET>"; for n in dod-ledger.md dod-checklist.md; do for f in docs/*/specs/$T/_local/$n docs/*/*/specs/$T/_local/$n; do [ -f "$f" ] && echo "$f"; done; done; exit 0'
    > ```
 
 3. Gather signals: `git diff --name-only <base>...HEAD` + working tree status; ledger verdicts and `phase:` frontmatter; presence of `specs/<TICKET>/spec.md` and `specs/<TICKET>/_local/build-plan.md`; whether the diff contains test files for the changed code.

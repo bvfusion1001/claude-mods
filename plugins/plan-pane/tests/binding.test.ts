@@ -2,7 +2,7 @@ import { test, expect } from 'claude-code/testing'
 import { bindingPath, dodFor, planFor, planName, workRoot } from '../hooks/binding'
 
 test('a file in a ticket folder belongs to that ticket plan', () => {
-  expect(planFor('/r', '/r/docs/billing/specs/PROJ-12/_local/dod-checklist.md'))
+  expect(planFor('/r', '/r/docs/billing/specs/PROJ-12/_local/dod-ledger.md'))
     .toBe('/r/docs/billing/specs/PROJ-12/_local/build-plan.md')
 })
 
@@ -23,9 +23,11 @@ test('plan names: ticket, freeform folder, legacy file', () => {
   expect(planName('/r/docs/BUILD-PLAN.md')).toBe('BUILD-PLAN.md')
 })
 
-test('only ticket plans have a DoD ledger', () => {
-  expect(dodFor('/r/docs/billing/specs/PROJ-12/_local/build-plan.md'))
-    .toBe('/r/docs/billing/specs/PROJ-12/_local/dod-checklist.md')
+test('only ticket plans have a DoD ledger, dod-ledger.md before the older dod-checklist.md', () => {
+  expect(dodFor('/r/docs/billing/specs/PROJ-12/_local/build-plan.md')).toEqual([
+    '/r/docs/billing/specs/PROJ-12/_local/dod-ledger.md',
+    '/r/docs/billing/specs/PROJ-12/_local/dod-checklist.md',
+  ])
   expect(dodFor('/r/docs/_local/plans/idea-x/build-plan.md')).toBeUndefined()
   expect(dodFor('/r/docs/BUILD-PLAN.md')).toBeUndefined()
 })

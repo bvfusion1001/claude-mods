@@ -279,6 +279,12 @@ and each survives a Handoff.
       dependency, so Brad installed `stash` by hand.
 - [x] Shared 2026-10-20: repo made public (history checked for client terms first), and an
       install page with a one-paste prompt published for teammates.
+- [x] Ledger renamed 2026-10-20: new DoD ledgers are `dod-ledger.md`, and `plan-pane`, `dod` and
+      `stash` still read an older `dod-checklist.md`. README says to skip `build-plan` and `dod`
+      where a repo ships its own.
+- [x] `plan-pane` 0.7.4, 2026-10-20: no longer depends on `build-plan`. Start and Resume run the
+      repo's `build-plan-init` / `build-plan-resume` skills when present, else the plugin's, else
+      show a hint. Installing `context-band` now pulls in only `plan-pane` and `stash`.
 
 **Done when:** one teammate has it installed and used the Handoff button.
 
