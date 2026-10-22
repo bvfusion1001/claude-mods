@@ -1,6 +1,6 @@
 ---
 name: build-plan-init
-description: Start a build plan for a task - a short discovery, then a phased, top-to-bottom checklist with done conditions and a Parking Lot, saved as a gitignored local file. Use when starting multi-step work, or when the user says "build plan", "make a plan for this", "build-plan init", "plan this out".
+description: Start a build plan for a task - a short discovery, then a phased, top-to-bottom checklist with done conditions and a Parking Lot, where each phase opens with a design the developer agrees to before any code, saved as a gitignored local file. Use when starting multi-step work, or when the user says "build plan", "make a plan for this", "build-plan init", "plan this out".
 ---
 
 # build-plan-init
@@ -38,10 +38,12 @@ time, only for what the code can't answer: scope edges, what "done" means, hard 
 
 <One paragraph: the goal and why.>
 
-**The loop for every item:** Discover, Design, Test (write the failing test), Build, Verify.
-Check an item off only once it is verified.
+**The loop for every item:** Discover, Design, Test, Build, Verify.
+Each phase opens with a design the developer agrees to. Check an item off only once it is verified.
 
 ## Phase 1: <name>
+
+**Design:** not agreed yet
 
 - [ ] <one verifiable item>
 - [ ] <item> (DoD: `<path to dod-ledger.md>`), when it maps to one
@@ -56,12 +58,42 @@ Check an item off only once it is verified.
 New ideas land here, not in the current phase.
 ```
 
-Rules: 2 to 7 phases, each one shippable or checkable alone. Items are small enough to verify in
-one sitting. Every phase has a **Done when**.
+- 2 to 7 phases, each one shippable or checkable alone. Every phase has a **Design** line and a
+  **Done when**.
+- Items are small enough to verify in one sitting.
+- **Test** means write the failing test first when there is code to test. For config, docs, or
+  skill work, write down how Verify will show it working instead.
+- If the repo ships a managed package or another versioned artifact, a change to shipped source gets
+  an item for its upgrade impact: what an install on the previous version sees.
+- A phase that ships ends with its PR item.
 
 ## Step 4: Confirm
 
 Show the phases and their done conditions, not every item. Link the file. Ask "Start Phase 1?"
+
+A yes starts Phase 1 at its design checkpoint, not at code.
+
+## The design checkpoint
+
+Every phase starts here, before any test or code. `build-plan-next` and `build-plan-resume` run it
+too, from this section. The point: the developer understands the approach and agrees to it while
+changing it is still cheap.
+
+1. **Discover.** Read what the phase touches: the files, the config, the rules that apply.
+2. **Propose the design** in a few bullets:
+   - The approach, in one or two sentences.
+   - The files to add or change.
+   - The entry points: events, methods, components, endpoints, or config.
+   - The main trade-off, and anything rejected and why.
+3. **Write nothing yet.** No code, test, or config in that message. Ask "Build it this way?"
+4. **Wait for the answer.**
+   - **Yes:** replace the phase's **Design** line with the agreed approach in one or two sentences.
+     Then start the phase's first item.
+   - **Push-back:** change the design, and the phase's items if they change. Ask again.
+
+Inside a phase, ask again only when an item would change the agreed design. Otherwise build straight
+through. Skip the checkpoint only when the developer says so for this phase, and write
+`**Design:** skipped by request` so the plan shows it.
 
 ## Links
 

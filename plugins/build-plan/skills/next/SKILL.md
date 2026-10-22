@@ -24,7 +24,13 @@ say what's still missing, and offer to add it as an item.
 
 ## Step 4: Move on
 
-Name the next unchecked item and start it with the loop's first step (Discover).
+Name the next unchecked item.
+
+- **Its phase has no agreed Design line (missing, or "not agreed yet"):** this is true of every
+  phase not yet started. Run the design checkpoint from `build-plan-init` first. No code until the
+  developer agrees.
+- **It would change the phase's agreed design:** say how, and get a yes before building.
+- **Otherwise:** start it with the loop's first step (Discover).
 
 ## Links
 

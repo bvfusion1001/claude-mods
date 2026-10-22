@@ -32,11 +32,16 @@ ledger too and note its open items.
 
 > **Plan:** `<path>`
 > - Phase 3 of 5: <name>. Done when: <condition>.
+> - Design: <the phase's Design line, or "not agreed yet">
 > - Next item: <item>
 > - Open in this phase: <count>. Parking Lot: <count> items.
 > - DoD: <open items>, if the item names a ledger
 
-Then start the item with the loop's first step (Discover), unless the user asked only for status.
+Then, unless the user asked only for status:
+
+- **The phase has no agreed Design line (missing, or "not agreed yet"):** run the design checkpoint
+  from `build-plan-init` before any code.
+- **Otherwise:** start the item with the loop's first step (Discover).
 
 ## Links
 
