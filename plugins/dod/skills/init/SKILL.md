@@ -36,7 +36,7 @@ The item set, requiredness, triggers, verifiers, and canonical paths are **defin
    > `_local/`, which is gitignored (`**/_local/`). Those tools — and any shell wrapper that
    > rewrites them, such as an rtk-style proxy — skip gitignored paths and return **nothing with
    > exit code 0**. That is indistinguishable from "no ledger exists", so the guard passes and
-   > `dod:init` overwrites a real ledger. Confirmed on 2026-08-13 in the `caterpillar` repo, where
+   > `dod:init` overwrites a real ledger. Confirmed on 2026-08-13 in a real repo, where
    > `find docs -name "dod-checklist.md"` returned empty while the file was present.
    >
    > The form above avoids the problem entirely: it never invokes a search tool, it uses literal
