@@ -78,3 +78,10 @@ test('in a worktree, the tie uses the worktree root, not the main checkout', asy
   await $.tool.call(write(`${wt}/docs/_local/plans/idea-x/notes.md`))
   expect(JSON.parse(files[BINDING])).toMatchObject({ plan: `${wt}/docs/_local/plans/idea-x/build-plan.md`, root: wt })
 })
+
+test('an edit under a nested area ties to the ticket plan', async ($, on) => {
+  const files: Record<string, string> = {}
+  base(on, files, [])
+  await $.tool.call({ tool: 'Edit', tool_use_id: 'u3', file_path: '/work/repo/docs/features/pay/specs/PROJ-7/_local/notes.md', old_string: 'a', new_string: 'b' })
+  expect(JSON.parse(files[BINDING]).plan).toBe('/work/repo/docs/features/pay/specs/PROJ-7/_local/build-plan.md')
+})

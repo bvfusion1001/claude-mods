@@ -163,7 +163,7 @@ runs the small loop; each phase runs the large one.
       Changed 2026-10-16: the Parking Lot box is the one exception.
 - [x] Redraws when either file changes: mods have no file watch, so it checks mtimes every 3 seconds while open, and after each turn.
 - [x] Opens by command (`/plan-pane`), and stays shut otherwise.
-- [x] Seen live 2026-10-07: `/plan-pane` opens in the desktop app (caterpillar, `dev`).
+- [x] Seen live 2026-10-07: `/plan-pane` opens in the desktop app (a client repo, `dev`).
 - [ ] A checkbox edit shows in the pane within seconds.
 - [x] `plan-pane` 0.2.0, 12 tests pass:
       - **Toggle:** a "Plan & DoD" / "Hide plan" button above the prompt, hotkey `p` after
@@ -285,6 +285,8 @@ and each survives a Handoff.
 - [x] `plan-pane` 0.7.4, 2026-10-20: no longer depends on `build-plan`. Start and Resume run the
       repo's `build-plan-init` / `build-plan-resume` skills when present, else the plugin's, else
       show a hint. Installing `context-band` now pulls in only `plan-pane` and `stash`.
+- [x] `plan-pane` 0.7.5 / `context-band` 0.10.3, 2026-10-23: nested areas work
+      (`docs/features/<area>/specs/...`). A teammate's plan was invisible in the pane before this.
 
 **Done when:** one teammate has it installed and used the Handoff button.
 

@@ -1,6 +1,6 @@
 {
   "name": "context-band",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "Band above the prompt: context zone, a Panel pane toggle, and a one-press Handoff with a rolling draft.",
   "author": {
     "name": "Brad"

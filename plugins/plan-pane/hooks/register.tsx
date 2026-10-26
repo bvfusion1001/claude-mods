@@ -73,9 +73,19 @@ async function myBinding($: EngineInterface): Promise<string | undefined> {
   }
 }
 
-async function ticketAreas($: EngineInterface, root: string): Promise<string[]> {
-  if (!(await $.fs.exists(`${root}/docs`))) return []
-  return (await $.fs.list(`${root}/docs`)).filter((d) => d.kind === 'dir' && d.name !== '_local').map((d) => d.name)
+// folders under docs/ that hold a specs/ folder, nested areas included
+async function ticketAreas($: EngineInterface, root: string, rel = ''): Promise<string[]> {
+  const dir = `${root}/docs${rel}`
+  if (!(await $.fs.exists(dir))) return []
+  const areas: string[] = []
+  for (const d of await $.fs.list(dir)) {
+    // links skipped so a link loop can't recurse forever
+    if (d.kind !== 'dir' || d.isLink || d.name === '_local' || d.name === 'specs') continue
+    const area = `${rel}/${d.name}`
+    if (await $.fs.exists(`${root}/docs${area}/specs`)) areas.push(area.slice(1))
+    areas.push(...(await ticketAreas($, root, area)))
+  }
+  return areas
 }
 
 type Found = { root: string; ticket?: string; plan?: string; dod?: string; working: Working; stamp: string }

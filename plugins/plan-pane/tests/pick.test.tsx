@@ -208,3 +208,31 @@ test('the picker lists a ticket folder that holds only an older dod-checklist.md
   expect(await ui.find({ key: 'pick-PROJ-77' })).toBeDefined()
   await ui.unmount()
 })
+
+const NESTED = '/r/docs/features/payments/specs/PROJ-12/_local/build-plan.md'
+
+test('a ticket under a nested area is found from the branch', async ($, on) => {
+  const files = repo({ [NESTED]: '## Phase 1: Nested\n\n- [ ] nested item\n' })
+  delete files[TICKET]
+  delete files[LEDGER]
+  base(on, files)
+  const ui = await openPane($)
+  expect(await ui.find({ type: 'Text', text: /▶ nested item/ })).toBeDefined()
+  await ui.unmount()
+})
+
+test('the picker lists tickets under a nested area', async ($, on) => {
+  base(on, repo({ '/r/docs/features/payments/specs/PROJ-88/_local/build-plan.md': '## Phase 1: P\n\n- [ ] x\n' }))
+  const ui = await openPane($)
+  await ui.press({ key: 'pick' })
+  expect(await ui.find({ key: 'pick-PROJ-88' })).toBeDefined()
+  await ui.unmount()
+})
+
+test('the picker lists tickets under a deeply nested area', async ($, on) => {
+  base(on, repo({ '/r/docs/a/b/c/d/e/specs/PROJ-99/_local/build-plan.md': '## Phase 1: P\n\n- [ ] x\n' }))
+  const ui = await openPane($)
+  await ui.press({ key: 'pick' })
+  expect(await ui.find({ key: 'pick-PROJ-99' })).toBeDefined()
+  await ui.unmount()
+})

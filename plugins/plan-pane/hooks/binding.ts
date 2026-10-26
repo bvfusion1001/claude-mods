@@ -1,7 +1,7 @@
 // context-band keeps a copy of planFor and bindingPath; change both together
 export type Binding = { plan: string; root: string }
 
-const TICKET_DIR = /^docs\/[^/]+\/specs\/([^/]+)\/_local\//
+const TICKET_DIR = /^docs\/(?:[^/]+\/)+?specs\/([^/]+)\/_local\//
 const FREE_DIR = /^docs\/_local\/plans\/([^/]+)\//
 const LEGACY = 'docs/BUILD-PLAN.md'
 

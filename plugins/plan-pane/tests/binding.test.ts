@@ -42,3 +42,8 @@ test('the work root is the nearest folder with a .git, so a worktree finds itsel
   expect(await workRoot('/m/docs', has(['/m/.git']))).toBe('/m')
   expect(await workRoot('/tmp/x', has([]))).toBeUndefined()
 })
+
+test('a file under a nested area belongs to that ticket plan', () => {
+  expect(planFor('/r', '/r/docs/features/payments/specs/PROJ-12/_local/notes.md'))
+    .toBe('/r/docs/features/payments/specs/PROJ-12/_local/build-plan.md')
+})

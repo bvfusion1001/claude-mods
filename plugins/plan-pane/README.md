@@ -17,7 +17,7 @@ A side pane showing the build plan this chat is working on.
 First match wins:
 
 1. The plan this chat is tied to, by the picker or by editing a file in a plan's folder.
-2. The branch's ticket: `docs/<area>/specs/<TICKET>/_local/build-plan.md` and `dod-ledger.md` (or the older `dod-checklist.md`).
+2. The branch's ticket: `docs/<area>/specs/<TICKET>/_local/build-plan.md` and `dod-ledger.md` (or the older `dod-checklist.md`). `<area>` can be nested, like `features/payments`.
 3. `docs/BUILD-PLAN.md` at the repo root.
 
 Freeform plans live at `docs/_local/plans/<name>/build-plan.md`.

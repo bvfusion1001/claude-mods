@@ -17,7 +17,7 @@ function base(on: any, repoFails = false, sent: string[] = [], plugin = ['build-
     if (repoFails) throw new Error('no repo here')
     return { value: { root: '/r', remote: null, internal: false } }
   })
-  on('fs.exists', (_$: any, e: any) => ({ value: e.path in FILES || e.path === '/r/docs' || repoFiles.includes(e.path) }))
+  on('fs.exists', (_$: any, e: any) => ({ value: e.path in FILES || Object.keys(FILES).some((k) => k.startsWith(`${e.path}/`)) || repoFiles.includes(e.path) }))
   on('fs.stat', (_$: any, e: any) => ({ value: { kind: e.path === '/r/.git' ? 'dir' : 'file', size: 1, mtimeMs: 1, isLink: false } }))
   on('fs.read', (_$: any, e: any) => ({ value: FILES[e.path] }))
   on('fs.list', (_$: any, e: any) => ({
